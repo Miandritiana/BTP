@@ -47,13 +47,16 @@ public class HomeController : Controller
 
             if (isSuperUser)
             {
+                coco.connection.Close();
                 // return RedirectToAction("ListBillet", "Super");
             }
 
-            // return RedirectToAction("ListBillet", "Home");
+            coco.connection.Close();
+            return RedirectToAction("Homepage", "Home");
 
         }else{
             TempData["error"] = "Misy diso ny user na mdp";
+            coco.connection.Close();
             return RedirectToAction("Index", "Home", new { error = true });
         }
 
@@ -62,6 +65,61 @@ public class HomeController : Controller
         return View();
     }
 
+    public IActionResult import()
+    {
+        if(HttpContext.Session.GetString("sessionId") != null)
+        {
+            return View("Import");
+
+        }else{
+
+            return RedirectToAction("Index", "Home");
+        }
+    }
+
+    public IActionResult ImportCSV(IFormFile csvFile)
+    {
+        if (csvFile != null && csvFile.Length > 0)
+        {
+            try
+            {
+                Import imp = new Import();
+                string message = imp.ImportFunction(csvFile);
+                
+                if (message.Contains("Error") || message.Contains("Exception") || message.Contains("failed"))
+                {
+                    ViewBag.Error = message;
+                }
+                else
+                {
+                    ViewBag.Message = message;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Error processing CSV file: " + ex.Message;
+            }
+        }
+        else
+        {
+            ViewBag.Error = "No file selected.";
+        }
+
+        return View("Import", ViewBag);
+    }
+
+    public IActionResult Homepage()
+    {
+        if(HttpContext.Session.GetString("sessionId") != null)
+        {
+            return View("Homepage");
+
+        }else{
+
+            return RedirectToAction("Index", "Home");
+        }
+    }
     public IActionResult Privacy()
     {
         return View();
