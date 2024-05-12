@@ -120,6 +120,22 @@ public class HomeController : Controller
             return RedirectToAction("Index", "Home");
         }
     }
+
+    public IActionResult ResetDatabase()
+    {
+        if(HttpContext.Session.GetString("sessionId") != null)
+        {
+            Connexion coco = new Connexion();
+            coco.connection.Open();
+                Connexion.ResetDatabase(coco);
+            coco.connection.Close();
+            return RedirectToAction("Homepage", "Home");
+
+        }else{
+
+            return RedirectToAction("Index", "Home");
+        }
+    }
     public IActionResult Privacy()
     {
         return View();
@@ -130,4 +146,22 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
+    // public IActionResult YourAction()
+    // {
+    //     try
+    //     {
+    //         // Code that uses your model method
+    //         var model = new YourModel();
+    //         var result = model.YourModelMethod();
+
+    //         return View(result); // Assuming result is a model you want to pass to the view
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         ViewData["error"] = ex.Message;
+    //         return View();
+    //     }
+    // }
+
 }

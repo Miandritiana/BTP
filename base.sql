@@ -32,8 +32,13 @@ create table tache(
     designation varchar(100),
     unite varchar(10),
     pu float,
-    idTrav varchar(14) references travaux(idTrav)
+    idTrav varchar(14) references travaux(idTrav) on delete cascade
 );
+
+ALTER TABLE tache NOCHECK CONSTRAINT FK__tache__idTrav__3E52440B;
+
+ALTER TABLE tache WITH CHECK CHECK CONSTRAINT FK__tache__idTrav__3E52440B;
+
 insert into tache (num, designation, unite, pu, idTrav)
 values
     ('001', 'Mur de soutenement et demi Cloture ht 1m', 'm3', 190000.00, 'trav1');
@@ -65,9 +70,10 @@ create table devis(
 create table detailDevis(
     idDetail AS ('detail' + cast(id as varchar(10))) PERSISTED primary key,
     id int identity(1, 1),
-    idDevis varchar(10) references devis(idDevis),
-    idTache varchar(10) references tache(idTache),
+    idDevis varchar(10) references devis(idDevis) on delete cascade,
+    idTache varchar(10) references tache(idTache) on delete cascade,
     quantite int
     pu int
 );
+
 

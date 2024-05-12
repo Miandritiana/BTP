@@ -14,28 +14,32 @@ namespace BTP.Models
         {
             get; set;
         }
-        public void ResetDatabase()
+
+        public static List<string> allTables(Connexion connexion)
         {
-            connection.Open();
-            using (var cmd = new SqlCommand("SELECT name FROM sysobjects WHERE xtype='U'", connection))
+            List<string> val = new();
+            var cmd = new SqlCommand("SELECT name FROM sysobjects WHERE xtype='U'", connexion.connection);
+            var reader = cmd.ExecuteReader();
+            
+            while (reader.Read())
             {
-                using (var reader = cmd.ExecuteReader())
+                val.Add(reader.GetString(0));
+            }
+
+            reader.Close();
+            return val;
+        }
+        public static void ResetDatabase(Connexion connexion)
+        {
+            List<string> tables = Connexion.allTables(connexion);
+            foreach (var item in tables)
+            {
+                if (item != "uuser")
                 {
-                    while (reader.Read())
-                    {
-                        string tableName = reader.GetString(0);
-                        if (tableName != "Uuser")
-                        {
-                            using (var cmd2 = new SqlCommand($"TRUNCATE TABLE {tableName}", connection))
-                            {
-                                cmd2.ExecuteNonQuery();
-                            }
-                        }
-                    }
+                    var cmd = new SqlCommand ($"delete from {item}", connexion.connection);
+                    cmd.ExecuteNonQuery();
                 }
             }
-            connection.Close();
         }
-
     }
 }
