@@ -13,8 +13,52 @@ public class HomeController : Controller
         _logger = logger;
     }
 
-    public IActionResult Index()
+    public IActionResult Index(bool error = false)
     {
+        if (error)
+        {
+            ViewData["error"] = TempData["error"]?.ToString();
+        }
+        return View();
+    }
+
+    public IActionResult ClearSession()
+    {
+        HttpContext.Session.Remove("sessionId");
+        return RedirectToAction("Index", "Home");
+    }
+
+
+    public IActionResult checkLog()
+    {
+        var username = Request.Form["username"].ToString();
+        var passW = Request.Form["password"].ToString();
+
+        Uuser uu = new Uuser();
+
+        Connexion coco = new Connexion();
+        coco.connection.Open();
+        
+        string idUser = uu.checkLogin(coco, username, passW);
+        if (idUser != null)
+        {
+            HttpContext.Session.SetString("sessionId", idUser);
+            bool isSuperUser = uu.isAdmin(coco, idUser);
+
+            if (isSuperUser)
+            {
+                // return RedirectToAction("ListBillet", "Super");
+            }
+
+            // return RedirectToAction("ListBillet", "Home");
+
+        }else{
+            TempData["error"] = "Misy diso ny user na mdp";
+            return RedirectToAction("Index", "Home", new { error = true });
+        }
+
+        coco.connection.Close();
+
         return View();
     }
 

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\L3\\S6\\BTP\\BTP.csproj": {}
+    "D:\\L3\\S6\\Eval\\BTP\\BTP.csproj": {}
   },
   "projects": {
-    "D:\\L3\\S6\\BTP\\BTP.csproj": {
+    "D:\\L3\\S6\\Eval\\BTP\\BTP.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\L3\\S6\\BTP\\BTP.csproj",
+        "projectUniqueName": "D:\\L3\\S6\\Eval\\BTP\\BTP.csproj",
         "projectName": "BTP",
-        "projectPath": "D:\\L3\\S6\\BTP\\BTP.csproj",
+        "projectPath": "D:\\L3\\S6\\Eval\\BTP\\BTP.csproj",
         "packagesPath": "C:\\Users\\Miandritiana\\.nuget\\packages\\",
-        "outputPath": "D:\\L3\\S6\\BTP\\obj\\",
+        "outputPath": "D:\\L3\\S6\\Eval\\BTP\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Miandritiana\\AppData\\Roaming\\NuGet\\NuGet.Config"
