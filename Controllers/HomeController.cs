@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using BTP.Models;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
-// using iText.Kernel.Pdf;
-// using iText.Layout;
-// using iText.Layout.Element;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
 
 namespace BTP.Controllers;
 

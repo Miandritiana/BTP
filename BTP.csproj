@@ -10,4 +10,6 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
 
+  <PackageReference Include="itext7" Version="x.x.x" />
+
 </Project>
