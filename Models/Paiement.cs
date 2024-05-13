@@ -14,45 +14,36 @@ namespace BTP.Models
 
         public Paiement() { }
 
-        public Paiement(string idDemande)
+        public Paiement(string idDemande, double paye)
         {
+            this.idDemande = idDemande;
+            this.paye = paye;
+        }
+
+        public Paiement(DateTime datePaye, double paye, string idDemande)
+        {
+            this.datePaye = datePaye;
+            this.paye = paye;
             this.idDemande = idDemande;
         }
 
-        public void insert(Connexion connexion)
+        public void insert(Connexion connexion, Paiement paiement)
         {
-            string query = "INSERT INTO paiement (idDemande) VALUES (@idDemande)";
+            string query = "INSERT INTO histo (paye, idDemande) VALUES (@paye, @idDemande)";
             SqlCommand command = new SqlCommand(query, connexion.connection);
-            command.Parameters.AddWithValue("@idDemande", this.idDemande);
+            command.Parameters.AddWithValue("@idDemande", paiement.idDemande);
+            command.Parameters.AddWithValue("@paye", paiement.paye);
             command.ExecuteNonQuery();
         }
 
-        public string lastId(Connexion connexion)
+        public void insert2(Connexion connexion, Paiement paiement)
         {
-            string idPaye = "";
-            try
-            {
-                string query = "SELECT TOP 1 idPaye FROM paiement ORDER BY idPaye DESC";
-                SqlCommand command = new SqlCommand(query, connexion.connection);
-                SqlDataReader dataReader = command.ExecuteReader();
-                if (dataReader.Read())
-                {
-                    idPaye = dataReader.GetString(0);
-                    dataReader.Close();
-                    return idPaye;
-                }
-                else
-                {
-                    dataReader.Close();
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex}");
-            }
-            return idPaye;
-
+            string query = "INSERT INTO histo (datePaye, paye, idDemande) VALUES (@datePaye, @paye, @idDemande)";
+            SqlCommand command = new SqlCommand(query, connexion.connection);
+            command.Parameters.AddWithValue("@datePaye", paiement.datePaye);
+            command.Parameters.AddWithValue("@idDemande", paiement.idDemande);
+            command.Parameters.AddWithValue("@paye", paiement.paye);
+            command.ExecuteNonQuery();
         }
     }
 }

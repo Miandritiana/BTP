@@ -16,7 +16,9 @@
                         <th>Date debut</th>
                         <th>Date Fin</th>
                         <th>Total a payer</th>
-                        <th>Detail Devis</th>
+                        <th>Etat de Paiement</th>
+                        <th>Reste a payer</th>
+                        <th>PDF</th>
                         <th>Paye</th>
                       </tr>
                     </thead>
@@ -28,23 +30,22 @@
                                 <td>@d.finition</td>
                                 <td>@d.dateDebut.ToString("MMMM dd, yyyy")</td>
                                 <td>@d.dateFin.ToString("MMMM dd, yyyy")</td>
-                                <td style="text-align: center;"><span class="badge bg-success">@d.etat</span></td>
                                 <td style="text-align: right;">@(string.Format("{0:#,##0.00}", d.montantTotal)) Ar</td>
-
-                                    @if(d.reste != 0){
-                                        <form action="@Url.Action("payer", "Home")" method="post">
-                                            <input type="hidden" name="idDemande" value="@d.idDemande">
-                                            <td><button type="submit" class="btn btn-dark">Paye</button></td>
-                                        </form>
-                                    }
-                                <td>
-                                    @if(d.reste == 0){
+                                <td><span class="badge bg-success">@d.etat</span></td>
+                                <td style="text-align: right;">@(string.Format("{0:#,##0.00}", d.reste)) Ar</td>
+                                <td><button type="button" class="btn btn-warning" data-bs-toggle="modal"  data-bs-target="#smallModal" data-idDevis="@d.idDevis">Have a pdf</button></td>
+                                @if(d.reste != 0){
+                                    <form action="@Url.Action("payer", "Home")" method="post">
+                                        <input type="hidden" name="idDemande" value="@d.idDemande">
+                                        <td><button type="submit" class="btn btn-dark">Paye</button></td>
+                                    </form>
+                                }
+                                    @* @if(d.reste == 0){
                                     <form action="@Url.Action("livre", "Home")" method="post">
                                         <input type="hidden" name="idDemande" value="@d.idDemande">
                                         <button type="submit" class="btn btn-danger">Livre</button>
                                     </form>
-                                    }
-                                </td>
+                                    } *@
                                 
 
                             </tr>
@@ -56,5 +57,55 @@
             </div>
             
         </div>
+
+    <div class="modal fade" id="smallModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">Are you sure?</h5>
+                <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                No, I'm not
+                </button>
+                <button type="submit" class="btn btn-primary" id="confirmGeneratePDF">I'm sure</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
     </div>
 </div>
+
+<script>
+    document.getElementById('confirmGeneratePDF').addEventListener('click', function() {
+        var idDevis = document.getElementById('smallModal').getAttribute('data-idDevis');
+        generatePDF(idDevis);
+    });
+
+    function generatePDF(idDevis) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/Home/pdf?idDevis=' + idDevis, true);
+        xhr.responseType = 'blob';
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Trigger download
+                var blob = new Blob([xhr.response], { type: 'application/pdf' });
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'your_filename.pdf';
+                link.click();
+            }
+        };
+        xhr.send();
+    }
+</script>
+
+
+

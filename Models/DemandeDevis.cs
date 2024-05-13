@@ -20,6 +20,12 @@ namespace BTP.Models
         public double reste { get; set; }
         public string etat { get; set; }
 
+        public string travaux { get; set; }
+        public string designation { get; set; }
+        public double quantite { get; set; }
+        public double pu { get; set; }
+        public double montant { get; set; }
+
         public DemandeDevis() { }
 
         public DemandeDevis(string idUser, DateTime dateDebut, DateTime dateFin, string idMaison, string idFinition)
@@ -31,9 +37,10 @@ namespace BTP.Models
             this.idFinition = idFinition;
         }
 
-        public DemandeDevis(string idUser, string idMaison, string typeMaison, string idFinition, string finition, double pourcent, DateTime dateDebut, DateTime dateFin, string idDevis, double montantTotal, double reste, string etat)
+        public DemandeDevis(string idUser, string idDemande, string idMaison, string typeMaison, string idFinition, string finition, double pourcent, DateTime dateDebut, DateTime dateFin, string idDevis, double montantTotal, double reste, string etat)
         {
             this.idUser = idUser;
+            this.idDemande = idDemande;
             this.idMaison = idMaison;
             this.typeMaison = typeMaison;
             this.idFinition = idFinition;
@@ -45,6 +52,23 @@ namespace BTP.Models
             this.montantTotal = montantTotal;
             this.reste = reste;
             this.etat = etat;
+        }
+
+        public DemandeDevis(double montantTotal, double reste, string idDemande)
+        {
+            this.montantTotal = montantTotal;
+            this.reste = reste;
+            this.idDemande = idDemande;
+        }
+
+        public DemandeDevis(string idDevis, string travaux, string designation, double quantite, double pu, double montant)
+        {
+            this.idDevis = idDevis;
+            this.travaux = travaux;
+            this.designation = designation;
+            this.quantite = quantite;
+            this.pu = pu;
+            this.montant = montant;
         }
 
         public DateTime add(Connexion connexion, DateTime dateDebut, string idMaison)
@@ -90,6 +114,7 @@ namespace BTP.Models
                 {
                     demandeDevisList.Add(new DemandeDevis(
                         dataReader["idUser"].ToString(),
+                        dataReader["idDemande"].ToString(),
                         dataReader["idMaison"].ToString(),
                         dataReader["type"].ToString(),
                         dataReader["idFinition"].ToString(),
@@ -137,6 +162,59 @@ namespace BTP.Models
                 Console.WriteLine($"Error: {ex}");
             }
             return idDemande;
+        }
+
+        public DemandeDevis infoPaye(Connexion connexion, string idDemande)
+        {
+            DemandeDevis val = new DemandeDevis();
+            try
+            {
+                string query = "SELECT montantTotal, reste, idDemande FROM v_detailDemandeDevis_montant_reste_etat where idDemande ='"+idDemande+"'";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    val = new DemandeDevis(
+                        dataReader.GetDouble(dataReader.GetOrdinal("montantTotal")),
+                        dataReader.GetDouble(dataReader.GetOrdinal("reste")),
+                        dataReader["idDemande"].ToString()
+                    );
+                }
+                dataReader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+            }
+            return val;
+        }
+
+        public List<DemandeDevis> detailDevis(Connexion connexion, string idDevis)
+        {
+            List<DemandeDevis> demandeDevisList = new List<DemandeDevis>();
+            try
+            {
+                string query = "select * from v_detail_devis where idDevis ='"+idDevis+"'";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    demandeDevisList.Add(new DemandeDevis(
+                        dataReader["idDevis"].ToString(),
+                        dataReader["travaux"].ToString(),
+                        dataReader["designation"].ToString(),
+                        dataReader.GetDouble(dataReader.GetOrdinal("quantite")),
+                        dataReader.GetDouble(dataReader.GetOrdinal("pu")),
+                        dataReader.GetDouble(dataReader.GetOrdinal("montant"))
+                    ));
+                }
+                dataReader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+            }
+            return demandeDevisList;
         }
     }
 }

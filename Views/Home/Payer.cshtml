@@ -16,18 +16,22 @@
 
                       <form action="@Url.Action("paiement", "Home")" method="post">
                         <div class="mb-3">
+                          <label class="form-label" >Date a payer</label>
+                          <input type="date" class="form-control" id="date" name="date" required/>
+                        </div>
+                        <div class="mb-3">
                           <label class="form-label" for="basic-default-fullname">Total a payer</label>
-                          <input type="number" class="form-control" id="total" name="total" value="@Model.achatBillet.apayer"/>
+                          <input type="number" class="form-control" id="total" name="total" value='@Model.infopaye.montantTotal' disabled/>
                         </div>
                         <div class="mb-3">
                           <label class="form-label" for="basic-default-company">Payer</label>
-                          <input type="number" class="form-control" id="payer" name="payer" min="0" max="@Model.achatBillet.apayer"/>
+                          <input type="number" class="form-control" id="payer" name="payer" min="0" max="@Model.infopaye.montantTotal"/>
                         </div>
                         <div class="mb-3">
                           <label class="form-label" for="basic-default-company">Reste a payer</label>
-                          <input type="number" class="form-control" id="restePayer" value="@Model.achatBillet.reste" disabled/>
+                          <input type="number" class="form-control" id="restePayer" value="@Model.infopaye.reste" disabled/>
                         </div>
-                          <input type="hidden" value="@((Model.achatBillet.idAB == null) ? "null" : Model.achatBillet.idAB)" name="idAB">
+                        <input type="hidden" value="@Model.infopaye.idDemande" name="idDemande">
                         <button type="submit" class="btn btn-primary">Submit</button>
                       </form>
                     </div>

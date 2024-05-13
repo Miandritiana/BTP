@@ -43,6 +43,12 @@ ALTER TABLE tache NOCHECK CONSTRAINT FK__tache__idTrav__3E52440B;
 
 ALTER TABLE tache WITH CHECK CHECK CONSTRAINT FK__tache__idTrav__3E52440B;
 
+alter table tache add travaux varchar(30);
+update tache set travaux = '000 - TRAVAUX PREPARATIORE' where idTrav = 'trav1';
+update tache set travaux = '100 - TRAVAUX DE TERRASSEMENT' where idTrav = 'trav2';
+update tache set travaux = '200 - TRAVAUX EN INFRASTRUCTURE' where idTrav = 'trav3';
+ALTER TABLE tache ALTER COLUMN travaux VARCHAR(100);
+
 insert into tache (num, designation, unite, pu, idTrav)
 values
     ('001', 'Mur de soutenement et demi Cloture ht 1m', 'm3', 190000.00, 'trav1');
@@ -210,25 +216,25 @@ select
 from demandeDevis d join finition f on f.idFinition = d.idFinition
 left join v_info_maison_total_devis v on v.idMaison = d.idMaison
 
-create table paiement(
-    idPaye AS ('paye' + cast(id as varchar(10))) PERSISTED primary key,
-    id int identity(1, 1),
-    idDemande varchar(17) references demandeDevis(idDemande) on delete cascade,
-);
+-- create table paiement(
+--     idPaye AS ('paye' + cast(id as varchar(10))) PERSISTED primary key,
+--     id int identity(1, 1),
+--     idDemande varchar(17) references demandeDevis(idDemande) on delete cascade,
+-- );
 
 create table histo(
     idHisto AS ('histo' + cast(id as varchar(10))) PERSISTED primary key,
     id int identity(1, 1),
-    idPaye varchar(14) references paiement(idPaye) on delete cascade,
     datePaye date default getdate(),
     paye int default 0
 );
+alter table histo add idDemande varchar(17) references demandeDevis(idDemande);
+-- insert into histo (paye, idDemande) values (0, 'demande6');
 
 --reste 
 create view v_detailDemandeDevis_montant_reste as
 select v.idUser, v.idDemande, v.idMaison, v.type, v.idFinition, v.designation,v.pourcent, v.dateDebut, v.dateFin, v.idDevis,v.montantTotal, v.montantTotal - sum(h.paye) as reste from v_detailDemandeDevis_montant v 
-	join paiement p on p.idDemande = v.idDemande 
-	join histo h on h.idPaye = p.idPaye
+	join histo h on h.idDemande = v.idDemande
 	group by v.idUser, v.idDemande, v.idMaison, v.type, v.idFinition, v.designation,v.pourcent, v.dateDebut, v.dateFin, v.idDevis,v.montantTotal
 
 --etat
@@ -241,6 +247,11 @@ select *,
     END AS EtatDePaiement
 from v_detailDemandeDevis_montant_reste
 
+--ilaina amn pdf
+create view v_detail_devis as
+select d.idDevis, t.travaux, t.designation, d.quantite, t.pu, d.quantite*t.pu as montant from detaildevis d
+	join tache t on t.idTache = d.idTache
+	join devis dev on dev.idDevis = d.idDevis
 
 
 

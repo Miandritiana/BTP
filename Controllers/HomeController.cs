@@ -1,6 +1,11 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using BTP.Models;
+using System.IO;
+using Microsoft.AspNetCore.Mvc;
+// using iText.Kernel.Pdf;
+// using iText.Layout;
+// using iText.Layout.Element;
 
 namespace BTP.Controllers;
 
@@ -172,7 +177,6 @@ public class HomeController : Controller
             if (idFinition != null && dateDebut != null)
             {
                 DemandeDevis d = new DemandeDevis();
-                Paiement p = new Paiement();
 
                 Connexion coco = new Connexion();
                 coco.connection.Open();
@@ -181,8 +185,8 @@ public class HomeController : Controller
                     DemandeDevis insert = new DemandeDevis(sessionId, dateDebut, dateFin, idMaison, idFinition);
                     if (insert.Insert(coco))
                     {
-                        Paiement pInsert = new Paiement(d.lastId(coco));
-                        pInsert.insert(coco);
+                        Paiement pInsert = new Paiement(d.lastId(coco), 0);
+                        // pInsert.insert(coco);
                         coco.connection.Close();
                         return RedirectToAction("listDemande", "Home");
                     }else
@@ -216,6 +220,9 @@ public class HomeController : Controller
             Connexion coco = new Connexion();
             coco.connection.Open();
 
+            string lastId = dd.lastId(coco);
+            Paiement p = new Paiement(lastId, 0);
+            p.insert(coco, p);
             data.demandeList = dd.findAll(coco, HttpContext.Session.GetString("sessionId"));
 
             coco.connection.Close();
@@ -227,7 +234,7 @@ public class HomeController : Controller
         }
     }
     
-    public IActionResult payer()
+    public IActionResult payer(string idDemande)
     {
         if(HttpContext.Session.GetString("sessionId") != null)
         {
@@ -237,16 +244,121 @@ public class HomeController : Controller
             Connexion coco = new Connexion();
             coco.connection.Open();
 
-            // data.demandeList = dd.findAll(coco, HttpContext.Session.GetString("sessionId"));
+            data.infopaye = dd.infoPaye(coco, idDemande);
 
             coco.connection.Close();
-            return View("payer", data);
+            return View("Payer", data);
 
         }else{
 
             return RedirectToAction("Index", "Home");
         }
     }
+
+    public IActionResult paiement()
+    {
+        if(HttpContext.Session.GetString("sessionId") != null)
+        {
+            try
+            {
+                double payer = (double)Convert.ToInt32(Request.Form["payer"]);
+                var idDemande = Request.Form["idDemande"].ToString();
+                DateTime date = new();
+
+                if (Request.Form["date"].ToString() == null)
+                {
+                    date = DateTime.Now;
+
+                }else
+                {
+                    date = DateTime.Parse(Request.Form["date"].ToString());
+                }
+
+                if (idDemande != null)
+                {
+                    Paiement pa = new Paiement(date, payer, idDemande);
+
+                    Connexion coco = new Connexion();
+                    coco.connection.Open();
+
+                    pa.insert2(coco, pa);
+
+                    coco.connection.Close();
+                    return RedirectToAction("listDemande", "Home");
+                }
+                return RedirectToAction("ErrorPage", "Home");
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: {0}", ex.Message);
+                // ViewData["error"] = ex.Message;
+                return RedirectToAction("ErrorPage", "Home");
+            }
+            
+        }else{
+            return RedirectToAction("Index", "Home");
+        }
+    }
+
+    // public IActionResult pdf(string idDevis)
+    // {
+    //     try
+    //     {
+    //         if (HttpContext.Session.GetString("sessionId") != null)
+    //         {
+    //             // Your logic to fetch data based on idDevis
+    //             string data = GetData(idDevis);
+
+    //             // Generate PDF using iTextSharp
+    //             byte[] pdfBytes = GeneratePDF(data);
+
+    //             // Return the PDF as a file for download
+    //             return File(pdfBytes, "application/pdf", "your_filename.pdf");
+    //         }
+    //         else
+    //         {
+    //             return RedirectToAction("Index", "Home");
+    //         }
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Console.WriteLine("Error: {0}", ex.Message);
+    //         return RedirectToAction("ErrorPage", "Home");
+    //     }
+    // }
+
+    private string GetData(string idDevis)
+    {
+        DemandeDevis dd = new DemandeDevis();
+        Data data = new Data();
+
+        Connexion coco = new Connexion();
+        coco.connection.Open();
+
+        data.demandeList = dd.detailDevis(coco, idDevis);
+
+        coco.connection.Close();
+        return $"Data related to {idDevis}";
+    }
+
+    // private byte[] GeneratePDF(string data)
+    // {
+    //     using (MemoryStream stream = new MemoryStream())
+    //     {
+    //         PdfWriter writer = new PdfWriter(stream);
+    //         PdfDocument pdf = new PdfDocument(writer);
+    //         Document document = new Document(pdf);
+
+    //         // Add content to the PDF document
+    //         document.Add(new Paragraph(data));
+
+    //         // Close the document
+    //         document.Close();
+
+    //         return stream.ToArray();
+    //     }
+    // }
 
     public IActionResult ResetDatabase()
     {
