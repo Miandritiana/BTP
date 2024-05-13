@@ -172,6 +172,7 @@ public class HomeController : Controller
             if (idFinition != null && dateDebut != null)
             {
                 DemandeDevis d = new DemandeDevis();
+                Paiement p = new Paiement();
 
                 Connexion coco = new Connexion();
                 coco.connection.Open();
@@ -180,8 +181,10 @@ public class HomeController : Controller
                     DemandeDevis insert = new DemandeDevis(sessionId, dateDebut, dateFin, idMaison, idFinition);
                     if (insert.Insert(coco))
                     {
+                        Paiement pInsert = new Paiement(d.lastId(coco));
+                        pInsert.insert(coco);
                         coco.connection.Close();
-                        return View("ListDemande");
+                        return RedirectToAction("listDemande", "Home");
                     }else
                     {
                         ViewData["error"] = "Tsy mety inserer";
@@ -196,6 +199,48 @@ public class HomeController : Controller
         
             ViewData["error"] = "Tsy voray ny finition tianao na ny date";
             return RedirectToAction("Finition", "Home");
+
+        }else{
+
+            return RedirectToAction("Index", "Home");
+        }
+    }
+
+    public IActionResult listDemande()
+    {
+        if(HttpContext.Session.GetString("sessionId") != null)
+        {
+            DemandeDevis dd = new();
+            Data data = new Data();
+
+            Connexion coco = new Connexion();
+            coco.connection.Open();
+
+            data.demandeList = dd.findAll(coco, HttpContext.Session.GetString("sessionId"));
+
+            coco.connection.Close();
+            return View("ListDemande", data);
+
+        }else{
+
+            return RedirectToAction("Index", "Home");
+        }
+    }
+    
+    public IActionResult payer()
+    {
+        if(HttpContext.Session.GetString("sessionId") != null)
+        {
+            DemandeDevis dd = new();
+            Data data = new Data();
+
+            Connexion coco = new Connexion();
+            coco.connection.Open();
+
+            // data.demandeList = dd.findAll(coco, HttpContext.Session.GetString("sessionId"));
+
+            coco.connection.Close();
+            return View("payer", data);
 
         }else{
 

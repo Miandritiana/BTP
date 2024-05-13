@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "9c0E+2+He7VbSJ8a+U4JbA+uxni7+JpJW4GgvMZqDp0=",
+  "Hash": "T9ext8H4cjzdXpT2Cm0GcaCq8VJH2IjBsnn8i4Tti1E=",
   "Source": "BTP",
   "BasePath": "_content/BTP",
   "Mode": "Default",
@@ -816,12 +816,12 @@
       "OriginalItemSpec": "wwwroot\\assets\\img\\layouts\\layout-without-navbar-light.png"
     },
     {
-      "Identity": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\img\\posters\\land-of-bad.jpg",
+      "Identity": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\img\\logo.png",
       "SourceId": "BTP",
       "SourceType": "Discovered",
       "ContentRoot": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\",
       "BasePath": "_content/BTP",
-      "RelativePath": "assets/img/posters/land-of-bad.jpg",
+      "RelativePath": "assets/img/logo.png",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -830,41 +830,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\assets\\img\\posters\\land-of-bad.jpg"
-    },
-    {
-      "Identity": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\img\\posters\\oppenheimer.jpg",
-      "SourceId": "BTP",
-      "SourceType": "Discovered",
-      "ContentRoot": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\",
-      "BasePath": "_content/BTP",
-      "RelativePath": "assets/img/posters/oppenheimer.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\assets\\img\\posters\\oppenheimer.jpg"
-    },
-    {
-      "Identity": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\img\\posters\\the_idea_of_you.jpg",
-      "SourceId": "BTP",
-      "SourceType": "Discovered",
-      "ContentRoot": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\",
-      "BasePath": "_content/BTP",
-      "RelativePath": "assets/img/posters/the_idea_of_you.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\assets\\img\\posters\\the_idea_of_you.jpg"
+      "OriginalItemSpec": "wwwroot\\assets\\img\\logo.png"
     },
     {
       "Identity": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\js\\config.js",

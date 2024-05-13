@@ -1,0 +1,51 @@
+@{
+    ViewData["Title"] = "Client";
+}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Home renovation /</span> Paiement</h4>
+        <div class="row">
+                <div class="col-xl">
+                </div>
+                <div class="col-xl">
+                  <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                      <h5 class="mb-0">Paiement</h5>
+                    </div>
+                    <div class="card-body">
+
+                      <form action="@Url.Action("paiement", "Home")" method="post">
+                        <div class="mb-3">
+                          <label class="form-label" for="basic-default-fullname">Total a payer</label>
+                          <input type="number" class="form-control" id="total" name="total" value="@Model.achatBillet.apayer"/>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label" for="basic-default-company">Payer</label>
+                          <input type="number" class="form-control" id="payer" name="payer" min="0" max="@Model.achatBillet.apayer"/>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label" for="basic-default-company">Reste a payer</label>
+                          <input type="number" class="form-control" id="restePayer" value="@Model.achatBillet.reste" disabled/>
+                        </div>
+                          <input type="hidden" value="@((Model.achatBillet.idAB == null) ? "null" : Model.achatBillet.idAB)" name="idAB">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById("payer").addEventListener("input", function()
+    {
+        var total = parseInt(document.getElementById("total").value);
+        var payer = parseInt(document.getElementById("payer").value);
+        var restePayer = parseInt(document.getElementById("restePayer").value);
+        @* var diff = total - payer;
+        var tenareste = restePayer - payer;
+        document.getElementById("restePayer").value = tenareste; *@
+    });
+</script>
+</div>

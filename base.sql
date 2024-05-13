@@ -193,6 +193,8 @@ create table demandeDevis(
 --view detail montant
 create view v_detailDemandeDevis_montant as
 select 
+    d.idUser,
+    d.idDemande,
 	d.idMaison, 
 	v.type, 
 	d.idFinition, 
@@ -208,8 +210,36 @@ select
 from demandeDevis d join finition f on f.idFinition = d.idFinition
 left join v_info_maison_total_devis v on v.idMaison = d.idMaison
 
+create table paiement(
+    idPaye AS ('paye' + cast(id as varchar(10))) PERSISTED primary key,
+    id int identity(1, 1),
+    idDemande varchar(17) references demandeDevis(idDemande) on delete cascade,
+);
 
+create table histo(
+    idHisto AS ('histo' + cast(id as varchar(10))) PERSISTED primary key,
+    id int identity(1, 1),
+    idPaye varchar(14) references paiement(idPaye) on delete cascade,
+    datePaye date default getdate(),
+    paye int default 0
+);
 
+--reste 
+create view v_detailDemandeDevis_montant_reste as
+select v.idUser, v.idDemande, v.idMaison, v.type, v.idFinition, v.designation,v.pourcent, v.dateDebut, v.dateFin, v.idDevis,v.montantTotal, v.montantTotal - sum(h.paye) as reste from v_detailDemandeDevis_montant v 
+	join paiement p on p.idDemande = v.idDemande 
+	join histo h on h.idPaye = p.idPaye
+	group by v.idUser, v.idDemande, v.idMaison, v.type, v.idFinition, v.designation,v.pourcent, v.dateDebut, v.dateFin, v.idDevis,v.montantTotal
+
+--etat
+create view v_detailDemandeDevis_montant_reste_etat as
+select *,
+    CASE
+        WHEN reste != 0 AND reste != montantTotal THEN 'Avance'
+        WHEN reste = 0 THEN 'Payer!'
+        WHEN reste = montantTotal THEN 'NO payer'
+    END AS EtatDePaiement
+from v_detailDemandeDevis_montant_reste
 
 
 

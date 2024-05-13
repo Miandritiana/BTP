@@ -185,16 +185,8 @@
       "PackagePath": "staticwebassets\\assets\\img\\layouts\\layout-without-navbar-light.png"
     },
     {
-      "Id": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\img\\posters\\land-of-bad.jpg",
-      "PackagePath": "staticwebassets\\assets\\img\\posters\\land-of-bad.jpg"
-    },
-    {
-      "Id": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\img\\posters\\oppenheimer.jpg",
-      "PackagePath": "staticwebassets\\assets\\img\\posters\\oppenheimer.jpg"
-    },
-    {
-      "Id": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\img\\posters\\the_idea_of_you.jpg",
-      "PackagePath": "staticwebassets\\assets\\img\\posters\\the_idea_of_you.jpg"
+      "Id": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\img\\logo.png",
+      "PackagePath": "staticwebassets\\assets\\img\\logo.png"
     },
     {
       "Id": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\js\\config.js",

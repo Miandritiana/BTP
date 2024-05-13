@@ -15,41 +15,39 @@
                         <th>Finition</th>
                         <th>Date debut</th>
                         <th>Date Fin</th>
-                        <th>Reste a payer</th>
+                        <th>Total a payer</th>
                         <th>Detail Devis</th>
                         <th>Paye</th>
                       </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                        @foreach(var p in Model.ABList)
+                        @foreach(var d in Model.demandeList)
                         {
-                            @* <tr>
-                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>@p.nomUser</strong></td>
-                                <td>@p.nomBillet</td>
-                                <td>@p.nomClient</td>
-                                <td>@p.nomLieu</td>
-                                <td style="text-align: center;"><span class="badge bg-success">@p.etatPaye</span></td>
-                                <td style="text-align: right;">@p.reste Ar</td>
+                            <tr>
+                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>@d.typeMaison</strong></td>
+                                <td>@d.finition</td>
+                                <td>@d.dateDebut.ToString("MMMM dd, yyyy")</td>
+                                <td>@d.dateFin.ToString("MMMM dd, yyyy")</td>
+                                <td style="text-align: center;"><span class="badge bg-success">@d.etat</span></td>
+                                <td style="text-align: right;">@(string.Format("{0:#,##0.00}", d.montantTotal)) Ar</td>
 
-                                    @if(p.reste != 0){
+                                    @if(d.reste != 0){
                                         <form action="@Url.Action("payer", "Home")" method="post">
-                                            <input type="hidden" name="idAB" value="@p.idAB">
+                                            <input type="hidden" name="idDemande" value="@d.idDemande">
                                             <td><button type="submit" class="btn btn-dark">Paye</button></td>
                                         </form>
                                     }
                                 <td>
-                                    @if(p.reste == 0){
+                                    @if(d.reste == 0){
                                     <form action="@Url.Action("livre", "Home")" method="post">
-                                        <input type="hidden" name="idAB" value="@p.idAB">
-                                        <input type="hidden" name="count" value="@p.nbrBillet">
-                                        <input type="hidden" name="idBillet" value="@p.idBillet">
+                                        <input type="hidden" name="idDemande" value="@d.idDemande">
                                         <button type="submit" class="btn btn-danger">Livre</button>
                                     </form>
                                     }
                                 </td>
                                 
 
-                            </tr> *@
+                            </tr>
                         }
                     </tbody>
                   </table>
