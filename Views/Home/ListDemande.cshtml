@@ -1,0 +1,62 @@
+@{
+    ViewData["Title"] = "Check Date";
+}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Home renovation /</span> List demande</h4>
+        <div class="row mb-5">
+            <div class="card">
+                <p class="card-header"></p>
+                <div class="table-responsive text-nowrap">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Maison</th>
+                        <th>Finition</th>
+                        <th>Date debut</th>
+                        <th>Date Fin</th>
+                        <th>Reste a payer</th>
+                        <th>Detail Devis</th>
+                        <th>Paye</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @foreach(var p in Model.ABList)
+                        {
+                            @* <tr>
+                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>@p.nomUser</strong></td>
+                                <td>@p.nomBillet</td>
+                                <td>@p.nomClient</td>
+                                <td>@p.nomLieu</td>
+                                <td style="text-align: center;"><span class="badge bg-success">@p.etatPaye</span></td>
+                                <td style="text-align: right;">@p.reste Ar</td>
+
+                                    @if(p.reste != 0){
+                                        <form action="@Url.Action("payer", "Home")" method="post">
+                                            <input type="hidden" name="idAB" value="@p.idAB">
+                                            <td><button type="submit" class="btn btn-dark">Paye</button></td>
+                                        </form>
+                                    }
+                                <td>
+                                    @if(p.reste == 0){
+                                    <form action="@Url.Action("livre", "Home")" method="post">
+                                        <input type="hidden" name="idAB" value="@p.idAB">
+                                        <input type="hidden" name="count" value="@p.nbrBillet">
+                                        <input type="hidden" name="idBillet" value="@p.idBillet">
+                                        <button type="submit" class="btn btn-danger">Livre</button>
+                                    </form>
+                                    }
+                                </td>
+                                
+
+                            </tr> *@
+                        }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            
+        </div>
+    </div>
+</div>

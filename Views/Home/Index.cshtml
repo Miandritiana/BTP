@@ -16,7 +16,7 @@
               <h4 class="mb-2">Welcome to Home renovation! 👋</h4>
 
               <form class="mb-3" action="@Url.Action("checkLog", "Home")" method="POST">
-                <div class="mb-3">
+                @* <div class="mb-3">
                   <label for="username" class="form-label">Username</label>
                   <input
                     type="text"
@@ -26,22 +26,17 @@
                     placeholder="Enter your username"
                     autofocus
                   />
-                </div>
+                </div> *@
                 <div class="mb-3 form-password-toggle">
                   <div class="d-flex justify-content-between">
-                    <label class="form-label" for="password">Password</label>
+                    <label class="form-label" for="password">Numero</label>
                   </div>
-                  <div class="input-group input-group-merge">
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="password"
-                      name="password"
-                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                      aria-describedby="password"
-                    />
-                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                  </div>
+                      <div class="input-group input-group-merge">
+                          <span id="basic-icon-default-phone2" class="input-group-text"
+                            ><i class="bx bx-phone"></i
+                          ></span>
+                        <input type="tel" class="form-control" name="num" required />
+                      </div>
                 </div>
                 <div class="mb-3">
                 </div>

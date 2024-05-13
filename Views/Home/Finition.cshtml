@@ -1,0 +1,87 @@
+@{
+    ViewData["Title"] = "Finition";
+}
+<style>
+    .icon-card {
+        transition: transform 0.2s;
+    }
+
+    .icon-card:hover {
+        border: 1px solid #ffa300;
+        transform: scale(1.05);
+    }
+</style>
+<form action="@Url.Action("Demande", "Home")" method="post">
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Home renovation /</span> Finition</h4>
+        <div class="row mb-5">
+            <div class="col-6">
+                <div class="d-flex flex-wrap" id="icons-container">
+                    @foreach(var f in Model.finiList)
+                    {
+                        <div class="btn-group">
+                            <div class="card icon-card cursor-pointer text-center mb-4 mx-2" onclick="selectCard(this)">
+                                <div class="card-body">
+                                    <h3>@f.designation</h3>
+                                    <p class="icon-name text-capitalize text-truncate mb-0">@f.pourcent %</p>
+                                </div>
+                                <input type="hidden" name="selectedFinition" value="@f.idFinition" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3">
+                          <label class="form-label" for="basic-default-company">Date debut travaux</label>
+                          <input type="date" class="form-control" id="dateDebut" name="date"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <div class="col-2">
+                <a href="@Url.Action("Homepage", "Home")"><button class="btn btn-primary" type="button">Retour</button></a>
+            </div>
+            <div class="col-10" style="text-align: center;">
+                    <input type="hidden" name="idFinition" value="" id="val">
+                    @* <input type="hidden" name="date" id="valdate"> *@
+                    <button class="btn btn-dark">Valider</button>
+            </div>
+        </div>
+    </div>
+</div>
+</form>     
+
+<script>
+    function selectCard(card) {
+        var selectedFinition = card.querySelector('input[name="selectedFinition"]');
+        var idFinitionInput = document.getElementById('val');
+        @* var dateInput = document.getElementById('valdate'); *@
+        var allCards = document.querySelectorAll('.card.icon-card');
+
+        allCards.forEach(function (c) {
+            c.classList.remove('selected'); // Remove 'selected' class from all cards
+        });
+
+        card.classList.add('selected'); // Add 'selected' class to the clicked card
+        idFinitionInput.value = selectedFinition.value; // Set the value of idFinitionInput
+        @* dateInput.value = document.getElementById('dateDebut').value; // Set the value of dateInput *@
+
+        // Remove the border from previously selected cards
+        allCards.forEach(function (c) {
+            if (c !== card) {
+                c.style.border = 'none';
+            }
+        });
+
+        // Add border to the clicked card
+        card.style.border = '1px solid #ffa300';
+    }
+</script>
+
+

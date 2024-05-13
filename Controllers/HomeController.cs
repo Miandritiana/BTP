@@ -31,15 +31,14 @@ public class HomeController : Controller
 
     public IActionResult checkLog()
     {
-        var username = Request.Form["username"].ToString();
-        var passW = Request.Form["password"].ToString();
+        var num = Request.Form["num"].ToString();
 
         Uuser uu = new Uuser();
 
         Connexion coco = new Connexion();
         coco.connection.Open();
         
-        string idUser = uu.checkLogin(coco, username, passW);
+        string idUser = uu.checkLoginNum(coco, num);
         if (idUser != null)
         {
             HttpContext.Session.SetString("sessionId", idUser);
@@ -48,14 +47,14 @@ public class HomeController : Controller
             if (isSuperUser)
             {
                 coco.connection.Close();
-                // return RedirectToAction("ListBillet", "Super");
+                return RedirectToAction("Index", "Admin");
             }
 
             coco.connection.Close();
             return RedirectToAction("Homepage", "Home");
 
         }else{
-            TempData["error"] = "Misy diso ny user na mdp";
+            TempData["error"] = "Misy diso ny numero";
             coco.connection.Close();
             return RedirectToAction("Index", "Home", new { error = true });
         }
@@ -113,7 +112,90 @@ public class HomeController : Controller
     {
         if(HttpContext.Session.GetString("sessionId") != null)
         {
-            return View("Homepage");
+            Maison m = new Maison();
+            Data data = new Data();
+            
+            Connexion coco = new Connexion();
+            coco.connection.Open();
+
+            data.maisonList = m.findAll(coco);
+
+            coco.connection.Close();
+
+            return View("Homepage", data);
+
+        }else{
+
+            return RedirectToAction("Index", "Home");
+        }
+    }
+
+    public IActionResult Finition()
+    {
+        if(HttpContext.Session.GetString("sessionId") != null)
+        {
+            var idMaison = Request.Form["idMaison"].ToString();
+            if (idMaison != null)
+            {
+                HttpContext.Session.SetString("idMaison", idMaison);
+                Finition f = new Finition();
+                Data data = new Data();
+                
+                Connexion coco = new Connexion();
+                coco.connection.Open();
+
+                data.finiList = f.findAll(coco);
+
+                coco.connection.Close();
+
+                return View("Finition", data);
+            }
+        
+            ViewData["error"] = "Tsy voray ny idMaison nosafidinao";
+            return RedirectToAction("Homepage", "Home");
+
+        }else{
+
+            return RedirectToAction("Index", "Home");
+        }
+    }
+
+    public IActionResult Demande()
+    {
+        if(HttpContext.Session.GetString("sessionId") != null)
+        {
+            string idMaison = HttpContext.Session.GetString("idMaison");
+            string sessionId = HttpContext.Session.GetString("sessionId");
+            var idFinition = Request.Form["idFinition"].ToString();
+            DateTime dateDebut = DateTime.Parse(Request.Form["date"].ToString());
+
+            if (idFinition != null && dateDebut != null)
+            {
+                DemandeDevis d = new DemandeDevis();
+
+                Connexion coco = new Connexion();
+                coco.connection.Open();
+
+                    DateTime dateFin = d.add(coco, dateDebut, idMaison);
+                    DemandeDevis insert = new DemandeDevis(sessionId, dateDebut, dateFin, idMaison, idFinition);
+                    if (insert.Insert(coco))
+                    {
+                        coco.connection.Close();
+                        return View("ListDemande");
+                    }else
+                    {
+                        ViewData["error"] = "Tsy mety inserer";
+                        coco.connection.Close();
+                        return RedirectToAction("Finition", "Home");
+                    }
+
+                coco.connection.Close();
+
+                return View("ListDemande");
+            }
+        
+            ViewData["error"] = "Tsy voray ny finition tianao na ny date";
+            return RedirectToAction("Finition", "Home");
 
         }else{
 

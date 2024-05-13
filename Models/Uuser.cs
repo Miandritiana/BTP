@@ -11,16 +11,18 @@ namespace BTP.Models
         public string name { get; set; }
         public string passWord { get; set; }
         public int admin { get; set; }
+        public string num { get; set; }
 
         public Uuser() { }
 
-        public Uuser(string idUser, int id, string name, string passWord, int admin)
+        public Uuser(string idUser, int id, string name, string passWord, int admin, string num)
         {
             this.idUser = idUser;
             this.id = id;
             this.name = name;
             this.passWord = passWord;
             this.admin = admin;
+            this.num = num;
         }
 
         public List<Uuser> findAll(Connexion connexion)
@@ -38,7 +40,8 @@ namespace BTP.Models
                         (int)dataReader.GetInt32(1),
                         dataReader.GetString(2),
                         dataReader.GetString(3),
-                        (int)dataReader.GetInt32(4)
+                        (int)dataReader.GetInt32(4),
+                        dataReader.GetString(5)
                     ));
                 }
 
@@ -56,6 +59,32 @@ namespace BTP.Models
             try
             {
                 string query = "SELECT idUser FROM uuser WHERE name = '"+username+"' AND passWord = '"+password+"'";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                if (dataReader.Read())
+                {
+                    string idUser = dataReader.GetString(0);
+                    dataReader.Close();
+                    return idUser;
+                }
+                else
+                {
+                    dataReader.Close();
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+                return null;
+            }
+        }
+
+        public string checkLoginNum(Connexion connexion, string num)
+        {
+            try
+            {
+                string query = "SELECT idUser FROM uuser WHERE num = '"+num+"'";
                 SqlCommand command = new SqlCommand(query, connexion.connection);
                 SqlDataReader dataReader = command.ExecuteReader();
                 if (dataReader.Read())

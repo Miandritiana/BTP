@@ -1,15 +1,58 @@
 @{
-    ViewData["Title"] = "Devis";
+    ViewData["Title"] = "Typpe maison";
 }
+<style>
+    .maison{
+        transition: transform 0.2s;
+    }
+
+    .maison:hover {
+        border: 1px solid #ffa300;
+        transform: scale(1.05);
+    }
+</style>
+
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Home renovation /</span> Devis</h4>
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Home renovation /</span> Type Maison</h4>
         <div class="row mb-5">
-            <div class="col-md-6">
-                <form action="@Url.Action("ResetDatabase", "Home")" method="get">
-                    <button type="submit"  class="btn btn-dark">Reset database</button>
-                </form>
-            </div>
+                @if (ViewData["error"] != null)
+                {
+                  <div class="alert alert-danger" role="alert">@ViewData["error"]</div>
+                }
+            @foreach(var m in Model.maisonList)
+            {
+                <div class="col-md-3 mb-3">
+                    <form action="@Url.Action("Finition", "Home")" method="post">
+                        <div class="card h-100 maison">
+                            <div class="card-header" style="text-align: center;">
+                            <h5 class="card-title">@m.type</h5>
+                            <h2 class="card-title mb-2" style="color:#ffa300;">@(string.Format("{0:#,##0.00}", m.montantTotal)) Ar</h2>
+                            </div>
+                            <div class="card-body d-flex pb-0">
+                                <span class="bx bx-check"></span>
+                                <p class="card-text">@m.nbrChambre chambre</p>
+                            </div>
+                            <div class="card-body d-flex pb-0">
+                                <span class="bx bx-check"></span>
+                                <p class="card-text">@m.nbrToilet toilet</p>
+                            </div>
+                            <div class="card-body d-flex pb-0">
+                                <span class="bx bx-check"></span>
+                                <p class="card-text">@m.nbrCuisine cuisine</p>
+                            </div>
+                            <div class="card-body d-flex pb-0">
+                                <span class="bx bx-check"></span>
+                                <p class="card-text">@m.nbrLiving living</p>
+                            </div>
+                            <div class="card-footer" style="text-align: center;">
+                                <input type="hidden" value="@m.idMaison" name="idMaison">
+                                <button class="btn btn-primary" type="submit">Select</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            }
         </div>
     </div>
 </div>
