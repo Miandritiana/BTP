@@ -142,10 +142,9 @@ public class AdminController : Controller
 
             coco.connection.Close();
             
-            var jsonData = System.Text.Json.JsonSerializer.Serialize(data.demandeList);
+            var jsonData = System.Text.Json.JsonSerializer.Serialize(data.chartList);
             if (jsonData != null)
             {
-                Console.WriteLine("sdafg" + jsonData);
                 ViewData["JsonData"] = jsonData;
             }
             else

@@ -14,64 +14,90 @@ namespace BTP.Models
         public float pu { get; set; }
         public string idTrav { get; set; }
 
+        // public string code_travaux { get; set; }
+        // public string type_travaux { get; set; }
+
         public Tache() { }
 
-        public Tache(string idTache, int id, string num, string designation, string unite, float pu, string idTrav)
+        public Tache(string num, string designation, string unite, float pu)
         {
-            this.idTache = idTache;
-            this.id = id;
             this.num = num;
             this.designation = designation;
             this.unite = unite;
             this.pu = pu;
-            this.idTrav = idTrav;
         }
 
-        public List<Tache> findAll(Connexion connexion)
-        {
-            List<Tache> tacheList = new List<Tache>();
-            try
-            {
-                string query = "SELECT * FROM tache";
-                SqlCommand command = new SqlCommand(query, connexion.connection);
-                SqlDataReader dataReader = command.ExecuteReader();
-                while (dataReader.Read())
-                {
-                    tacheList.Add(new Tache(
-                        dataReader.GetString(0),
-                        (int)dataReader.GetInt32(1),
-                        dataReader.GetString(2),
-                        dataReader.GetString(3),
-                        dataReader.GetString(4),
-                        (float)dataReader.GetDouble(5),
-                        dataReader.GetString(6)
-                    ));
-                }
+        // public List<Tache> findAll(Connexion connexion)
+        // {
+        //     List<Tache> tacheList = new List<Tache>();
+        //     try
+        //     {
+        //         string query = "SELECT * FROM tache";
+        //         SqlCommand command = new SqlCommand(query, connexion.connection);
+        //         SqlDataReader dataReader = command.ExecuteReader();
+        //         while (dataReader.Read())
+        //         {
+        //             tacheList.Add(new Tache(
+        //                 dataReader.GetString(0),
+        //                 (int)dataReader.GetInt32(1),
+        //                 dataReader.GetString(2),
+        //                 dataReader.GetString(3),
+        //                 dataReader.GetString(4),
+        //                 (float)dataReader.GetDouble(5),
+        //                 dataReader.GetString(6),
+        //                 dataReader.GetString(7),
+        //                 dataReader.GetString(8)
+        //             ));
+        //         }
 
-                dataReader.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex}");
-            }
-            return tacheList;
-        }
+        //         dataReader.Close();
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine($"Error: {ex}");
+        //     }
+        //     return tacheList;
+        // }
         public void create(Connexion connexion, Tache nouveauTache)
         {
             try
             {
-                string query = "INSERT INTO tache (id, num, designation, unite, pu, idTrav) VALUES (@id, @num, @designation, @unite, @pu, @idTrav)";
+                string query = "INSERT INTO tache (num, designation, unite, pu) VALUES (@num, @designation, @unite, @pu)";
                 SqlCommand command = new SqlCommand(query, connexion.connection);
-                command.Parameters.AddWithValue("@id", nouveauTache.id);
                 command.Parameters.AddWithValue("@num", nouveauTache.num);
                 command.Parameters.AddWithValue("@designation", nouveauTache.designation);
                 command.Parameters.AddWithValue("@unite", nouveauTache.unite);
                 command.Parameters.AddWithValue("@pu", nouveauTache.pu);
-                command.Parameters.AddWithValue("@idTrav", nouveauTache.idTrav);
                 var result = command.ExecuteNonQuery();
                 if (result == 0)
                 {
                     throw new Exception("Erreur lors de la creation de la tache");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public string lastId(Connexion connexion)
+        {
+            string idTache = null;
+            try
+            {
+                string query = "SELECT TOP 1 idTache FROM tache ORDER BY idTache DESC";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                if (dataReader.Read())
+                {
+                    idTache = dataReader.GetString(0);
+                    dataReader.Close();
+                    return idTache;
+                }
+                else
+                {
+                    dataReader.Close();
+                    return null;
                 }
             }
             catch (Exception ex)

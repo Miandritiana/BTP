@@ -43,10 +43,14 @@ ALTER TABLE tache NOCHECK CONSTRAINT FK__tache__idTrav__3E52440B;
 
 ALTER TABLE tache WITH CHECK CHECK CONSTRAINT FK__tache__idTrav__3E52440B;
 
-alter table tache add travaux varchar(30);
-update tache set travaux = '000 - TRAVAUX PREPARATIORE' where idTrav = 'trav1';
-update tache set travaux = '100 - TRAVAUX DE TERRASSEMENT' where idTrav = 'trav2';
-update tache set travaux = '200 - TRAVAUX EN INFRASTRUCTURE' where idTrav = 'trav3';
+alter table tache add code_travaux varchar(10);
+alter table tache add type_travaux varchar(50);
+update tache set code_travaux = '000' where idTrav = 'trav1';
+update tache set code_travaux = '100' where idTrav = 'trav2';
+update tache set code_travaux = '200' where idTrav = 'trav3';
+update tache set type_travaux = 'TRAVAUX PREPARATIORE' where idTrav = 'trav1';
+update tache set type_travaux = 'TRAVAUX DE TERRASSEMENT' where idTrav = 'trav2';
+update tache set type_travaux = 'TRAVAUX EN INFRASTRUCTURE' where idTrav = 'trav3';
 ALTER TABLE tache ALTER COLUMN travaux VARCHAR(100);
 
 insert into tache (num, designation, unite, pu, idTrav)
@@ -96,6 +100,14 @@ values
     ('type1', 2, 1, 1, 1),
     ('type2', 3, 2, 2, 2),
     ('type3', 4, 3, 3, 3);
+alter table maison add description varchar(100);
+alter table maison add surface float default 0;
+update maison set surface = 154 where idType = 'type1';
+update maison set surface = 23.5 where idType = 'type2';
+update maison set surface = 40.3 where idType = 'type3';
+update maison set description = '2chambre, 1toilet, 1cuisine, 1living' where idType = 'type1';
+update maison set description = '3chambre, 2toilet, 2cuisine, 2living' where idType = 'type2';
+update maison set description = '4chambre, 3toilet, 3cuisine, 3living' where idType = 'type3';
 
 create table devis(
     idDevis AS ('devis' + cast(id as varchar(10))) PERSISTED primary key,
@@ -166,11 +178,11 @@ select d.idDevis, ty.idType, ty.designation, sum(d.quantite*t.pu) as montantTota
 	group by d.idDevis, ty.idType, ty.designation
 
 create view v_info_maison as
-SELECT m.idMaison, m.idType, ty.designation as type, m.nbrChambre, m.nbrToilet, m.nbrCuisine, m.nbrLiving FROM maison m join typemaison ty on ty.idType = m.idType
+SELECT m.idMaison, m.idType, ty.designation as type, m.nbrChambre, m.nbrToilet, m.nbrCuisine, m.nbrLiving, m.description, m.surface FROM maison m join typemaison ty on ty.idType = m.idType
 
     -- ito no tena mety
 create view v_info_maison_total_devis as
-select d.idDevis, d.montantTotal, m.idMaison, m.idType, m.type, m.nbrChambre, m.nbrToilet, m.nbrCuisine, m.nbrLiving from v_devisTotalTypeMaison d
+select d.idDevis, d.montantTotal, m.idMaison, m.idType, m.type, m.nbrChambre, m.nbrToilet, m.nbrCuisine, m.nbrLiving, m.description, m.surface from v_devisTotalTypeMaison d
 left join v_info_maison m  on m.idType = d.idType
 
 create table finition(
@@ -272,8 +284,6 @@ GROUP BY
 	v.daty,
     v.montantTotal;
 
-
-
 --etat
 create view v_detailDemandeDevis_montant_reste_etat as
 select *,
@@ -318,3 +328,36 @@ GROUP BY
     DATEPART(MONTH, daty)
 ORDER BY 
     Month;
+
+--import
+    --type maison
+INSERT INTO typeMaison (designation, durre)
+SELECT @designation, @durre
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM typeMaison
+    WHERE designation = @designation
+    AND durre = @durre
+);
+
+    --maison
+INSERT INTO maison (idType, description, surface)
+SELECT @idType, @description, @surface
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM maison
+    WHERE idType = @idType
+    AND description = @description
+    AND surface = @surface
+);
+
+
+truncate table detaildevis
+delete from devis
+delete from histo
+delete from demandeDevis
+delete from maison
+delete from typeMaison
+delete from tache
+
+

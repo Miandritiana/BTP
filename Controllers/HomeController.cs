@@ -86,38 +86,6 @@ public class HomeController : Controller
         }
     }
 
-    public IActionResult ImportCSV(IFormFile csvFile)
-    {
-        if (csvFile != null && csvFile.Length > 0)
-        {
-            try
-            {
-                Import imp = new Import();
-                string message = imp.ImportFunction(csvFile);
-                
-                if (message.Contains("Error") || message.Contains("Exception") || message.Contains("failed"))
-                {
-                    ViewBag.Error = message;
-                }
-                else
-                {
-                    ViewBag.Message = message;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Error = "Error processing CSV file: " + ex.Message;
-            }
-        }
-        else
-        {
-            ViewBag.Error = "No file selected.";
-        }
-
-        return View("Import", ViewBag);
-    }
-
     public IActionResult Homepage()
     {
         HttpContext.Session.Remove("adminId");
@@ -411,5 +379,43 @@ public class HomeController : Controller
     //         return View();
     //     }
     // }
+
+    public IActionResult ImportMaisonTrav(IFormFile csvFile)
+    {
+        if (csvFile != null && csvFile.Length > 0)
+        {
+            try
+            {
+                ImportMaisonTravaux imp = new ImportMaisonTravaux();
+
+                Connexion coco = new Connexion();
+                coco.connection.Open();
+                
+                string message = imp.import(csvFile, coco);
+
+                coco.connection.Close();
+                
+                if (message.Contains("Error") || message.Contains("Exception") || message.Contains("failed"))
+                {
+                    ViewBag.Error = message;
+                }
+                else
+                {
+                    ViewBag.Message = message;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Error processing CSV file: " + ex.Message;
+            }
+        }
+        else
+        {
+            ViewBag.Error = "No file selected.";
+        }
+
+        return View("Import", ViewBag);
+    }
 
 }
