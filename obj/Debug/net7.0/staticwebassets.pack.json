@@ -189,6 +189,10 @@
       "PackagePath": "staticwebassets\\assets\\img\\logo.png"
     },
     {
+      "Id": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\js\\chart.js",
+      "PackagePath": "staticwebassets\\assets\\js\\chart.js"
+    },
+    {
       "Id": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\js\\config.js",
       "PackagePath": "staticwebassets\\assets\\js\\config.js"
     },
@@ -339,6 +343,10 @@
     {
       "Id": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\html2pdf.bundle.min.js",
+      "PackagePath": "staticwebassets\\html2pdf.bundle.min.js"
     },
     {
       "Id": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\js\\site.js",

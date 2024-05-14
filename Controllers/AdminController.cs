@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using BTP.Models;
+using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace BTP.Controllers;
 
@@ -122,15 +124,41 @@ public class AdminController : Controller
         if(HttpContext.Session.GetString("adminId") != null)
         {
             DemandeDevis d = new DemandeDevis();
+            Chart c = new Chart();
             Data data = new Data();
+
+            int year = DateTime.Now.Year;
+            if (TempData["year"] != null)
+            {
+                year = int.Parse(TempData["year"].ToString());
+            }
 
             Connexion coco = new Connexion();
             coco.connection.Open();
 
             data.listYear = d.listYear(coco);
             data.montantTotalDesDevis = d.montantTotalDesDevis(coco);
+            data.chartList = c.chart(coco, year);
 
             coco.connection.Close();
+            
+            var jsonData = System.Text.Json.JsonSerializer.Serialize(data.demandeList);
+            if (jsonData != null)
+            {
+                Console.WriteLine("sdafg" + jsonData);
+                ViewData["JsonData"] = jsonData;
+            }
+            else
+            {
+                // Handle the case where jsonData is null
+                Console.WriteLine("jsonData is null");
+            }
+
+            foreach (var item in data.demandeList)
+            {
+                Console.WriteLine(item.month +" "+item.montant);
+            }
+
             return View("dash", data);
 
         }else{
@@ -145,16 +173,13 @@ public class AdminController : Controller
 
         if (HttpContext.Session.GetString("adminId") != null)
         {
+            Console.WriteLine("sdfghn"+year);
             DemandeDevis d = new DemandeDevis();
             Data data = new Data();
 
-            Connexion coco = new Connexion();
-            coco.connection.Open();
+            TempData["year"] = year;
 
-            data.demandeList = d.chart(coco, year);
-
-            coco.connection.Close();
-            return Json(data); // Return JSON data
+            return RedirectToAction("dash");
         }
         else
         {

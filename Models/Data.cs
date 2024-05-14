@@ -13,6 +13,7 @@ namespace BTP.Models
         public double montantDejaEffectue = new();
         public double montantTotalDesDevis = new();
         public List<int> listYear = new List<int>();
+        public List<Chart> chartList = new List<Chart>();
 
         public Data()
         {
@@ -24,6 +25,7 @@ namespace BTP.Models
             this.montantDejaEffectue = 0;
             this.montantTotalDesDevis = 0;
             this.listYear = new List<int>();
+            this.chartList = new List<Chart>();
         }
     }
 }

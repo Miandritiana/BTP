@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "zwIs9gh/VQWChsMtK2jNPyMWgIVit99omPne7JrVpoYOovmpofhSOVeKu14iP/gwMWjeY8vO3eKHhi9fJu9SOw==",
+  "dgSpecHash": "jhb4K/6HFUU1t2sbkbzceB9sjRX6pwlSW+G4A/W5LjQLYk8fkKeIyafQUzXR1VJ11/BpqwcEQ1JfI6E4WQB0/A==",
   "success": true,
   "projectFilePath": "D:\\L3\\S6\\Eval\\BTP\\BTP.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Miandritiana\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\Miandritiana\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
+    "C:\\Users\\Miandritiana\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
     "C:\\Users\\Miandritiana\\.nuget\\packages\\runtime.native.system.data.sqlclient.sni\\4.7.0\\runtime.native.system.data.sqlclient.sni.4.7.0.nupkg.sha512",
     "C:\\Users\\Miandritiana\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\Miandritiana\\.nuget\\packages\\runtime.win-x64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",

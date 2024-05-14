@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "T9ext8H4cjzdXpT2Cm0GcaCq8VJH2IjBsnn8i4Tti1E=",
+  "Hash": "BUQpDMY9n/PqoYJ5s8wkbD9CT/wpnf4pWS46gx9E61Y=",
   "Source": "BTP",
   "BasePath": "_content/BTP",
   "Mode": "Default",
@@ -833,6 +833,23 @@
       "OriginalItemSpec": "wwwroot\\assets\\img\\logo.png"
     },
     {
+      "Identity": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\js\\chart.js",
+      "SourceId": "BTP",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\",
+      "BasePath": "_content/BTP",
+      "RelativePath": "assets/js/chart.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\assets\\js\\chart.js"
+    },
+    {
       "Identity": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\js\\config.js",
       "SourceId": "BTP",
       "SourceType": "Discovered",
@@ -1477,6 +1494,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\html2pdf.bundle.min.js",
+      "SourceId": "BTP",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\",
+      "BasePath": "_content/BTP",
+      "RelativePath": "html2pdf.bundle.min.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\html2pdf.bundle.min.js"
     },
     {
       "Identity": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\js\\site.js",

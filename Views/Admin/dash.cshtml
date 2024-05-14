@@ -1,28 +1,32 @@
+@using System.Text.Json;
 @{
     ViewData["Title"] = "Dashboard";
+    var jsonData = ViewData["JsonData"] as string;
 }
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Home renovation /</span> Admin</h4>
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Home renovation /</span> Dashboard</h4>
         
         <div class="row mb-5">
+            <div class="col-md-6"> </div>
             <div class="col-md-6">
                 <form action="@Url.Action("Index", "Admin")" method="get">
-                    <button type="submit"  class="btn btn-dark">Return Go List</button>
+                    <button type="submit"  class="btn btn-dark" style="float:right;">Return to List</button>
                 </form>
             </div>
         </div>
 
         <div class="row mb-5">
-            <div class="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
+            <div class="col-12 mb-4">
                 <div class="card">
                     <div class="row row-bordered g-0">
-                      <div class="col-md-8">
-                        <h5 class="card-header m-0 me-2 pb-3">Total Revenue</h5>
+                      <div class="col-8">
+                        <h5 class="card-header m-0 me-2 pb-3">Total Devis</h5>
                         @* <div id="totalRevenueChart" class="px-2"></div> *@
-                        <div id="huhu" class="px-2"></div>
+                        @* <div id="huhu" class="px-2"></div> *@
+                        <canvas id="huhu" width="400" height="400"></canvas>
                       </div>
-                      <div class="col-md-4">
+                      <div class="col-4">
                         <div class="card-body">
                           <div class="text-center">
                             <div class="dropdown">
@@ -44,29 +48,23 @@
                             </div>
                           </div>
                         </div>
-                        <div id="growthChart"></div>
+                        @* <div id="growthChart"></div> *@
                         <div class="text-center fw-semibold pt-3 mb-2">@(string.Format("{0:#,##0.00}", Model.montantTotalDesDevis)) Ar </div>
-@* 
+
                         <div class="d-flex px-xxl-4 px-lg-2 p-4 gap-xxl-3 gap-lg-1 gap-3 justify-content-between">
-                          <div class="d-flex">
-                            <div class="me-2">
-                              <span class="badge bg-label-primary p-2"><i class="bx bx-dollar text-primary"></i></span>
+                            @foreach(var c in Model.demandeList)
+                            {
+                            <div class="d-flex">
+                                <div class="me-2">
+                                <span class="badge bg-label-primary p-2"><i class="bx bx-dollar text-primary"></i></span>
+                                </div>
+                                <div class="d-flex flex-column">
+                                <small>@System.Globalization.DateTimeFormatInfo.CurrentInfo.GetMonthName(c.month)</small>
+                                <h6 class="mb-0">@(string.Format("{0:#,##0.00}", c.montant)) Ar</h6>
+                                </div>
                             </div>
-                            <div class="d-flex flex-column">
-                              <small>2022</small>
-                              <h6 class="mb-0">$32.5k</h6>
-                            </div>
-                          </div>
-                          <div class="d-flex">
-                            <div class="me-2">
-                              <span class="badge bg-label-info p-2"><i class="bx bx-wallet text-info"></i></span>
-                            </div>
-                            <div class="d-flex flex-column">
-                              <small>2021</small>
-                              <h6 class="mb-0">$41.2k</h6>
-                            </div>
-                          </div>
-                        </div> *@
+                            }
+                        </div>
 
                       </div>
                     </div>
@@ -77,32 +75,31 @@
     </div>
 </div>
 
-<!-- Move the JavaScript outside of the main container -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- Move the JavaScript chart code inside a <script> block -->
 <script>
-// Add an event listener to the dropdown items to fetch data when a year is selected
-document.querySelectorAll('.dropdown-item').forEach(item => {
-    item.addEventListener('click', event => {
-        event.preventDefault(); // Prevent default link behavior
-        const selectedYear = event.target.innerText;
-        fetchChart(selectedYear); // Fetch chart data for the selected year
-    });
-});
+    document.addEventListener('DOMContentLoaded', function () {
+        function createChart() {
 
-// Function to fetch chart data based on the selected year
-function fetchChart(year) {
-    fetch(`/Admin/chart?year=${year}`) // Fetch data from the chart action
-        .then(response => response.json())
-        .then(data => {
-            // Update the chart using the fetched JSON data
-            var growthChartData = data.demandeList;
+            var jsonDataFromServer = @Html.Raw(Json.Serialize(jsonData));
+            console.log(jsonDataFromServer);
 
-            var ctx = document.getElementById('huhu');
+            // Parse the JSON data from the server
+            var jsonDataFromServer = JSON.parse('@Html.Raw(jsonData)');
+
+            // Create an array to store the chart data
+            var growthChartData = [];
+
+            // Populate the growthChartData array from the parsed JSON data
+            jsonDataFromServer.forEach(function (item) {
+                growthChartData.push({ Month: item.month, Montant: item.montant });
+            });
+
+            var months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            var ctx = document.getElementById('huhu').getContext('2d');
             var myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: growthChartData.map(item => item.Month),
+                    labels: growthChartData.map(item => months[item.Month]),
                     datasets: [{
                         label: 'Montant des devis',
                         data: growthChartData.map(item => item.Montant),
@@ -119,12 +116,11 @@ function fetchChart(year) {
                     }
                 }
             });
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-            alert('Tsy azo le data. Avereno ndray.');
-        });
-}
+        }
 
+        createChart();
+    });
 </script>
+
+
 

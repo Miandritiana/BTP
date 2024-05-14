@@ -5,13 +5,35 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Home renovation /</span> Import csv</h4>
         <div class="row mb-5">
-            <div class="col-md-6">
+            <div class="col-md-4">
 
-                <form method="post" enctype="multipart/form-data" action="@Url.Action("ImportCSV", "Home")">
+                <form method="post" enctype="multipart/form-data" action="@Url.Action("ImportMaisonTrav", "Home")">
                     <input type="file" name="csvFile" class="form-control" />
                     <div class="demo-vertical-spacing">
                         <button type="submit" class="btn btn-primary">
-                            Import CSV
+                            Maison et Travaux
+                        </button>
+                    </div>
+                </form>
+
+                <h2></h2>
+                @if(ViewBag.Message != null)
+                {
+                    <div class="alert alert-success" role="alert">@ViewBag.Message</div>
+                }
+                @if(ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger" role="alert">@ViewBag.Error</div>
+                }
+            </div>
+
+            <div class="col-md-4">
+
+                <form method="post" enctype="multipart/form-data" action="@Url.Action("ImportDevis", "Home")">
+                    <input type="file" name="csvFile" class="form-control" />
+                    <div class="demo-vertical-spacing">
+                        <button type="submit" class="btn btn-primary">
+                            Devis
                         </button>
                     </div>
                 </form>
@@ -27,6 +49,31 @@
                 }
 
             </div>
+
+
+            <div class="col-md-4">
+
+                <form method="post" enctype="multipart/form-data" action="@Url.Action("ImportPaye", "Home")">
+                    <input type="file" name="csvFile" class="form-control" />
+                    <div class="demo-vertical-spacing">
+                        <button type="submit" class="btn btn-primary">
+                            Paiement
+                        </button>
+                    </div>
+                </form>
+
+                <h2></h2>
+                @if(ViewBag.Message != null)
+                {
+                    <div class="alert alert-success" role="alert">@ViewBag.Message</div>
+                }
+                @if(ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger" role="alert">@ViewBag.Error</div>
+                }
+
+            </div>
+
         </div>
     </div>
 </div>

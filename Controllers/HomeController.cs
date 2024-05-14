@@ -341,66 +341,33 @@ public class HomeController : Controller
         }
     }
 
-    // public IActionResult pdf(string idDevis)
-    // {
-    //     try
-    //     {
-    //         if (HttpContext.Session.GetString("sessionId") != null)
-    //         {
-    //             // Your logic to fetch data based on idDevis
-    //             string data = GetData(idDevis);
-
-    //             // Generate PDF using iTextSharp
-    //             byte[] pdfBytes = GeneratePDF(data);
-
-    //             // Return the PDF as a file for download
-    //             return File(pdfBytes, "application/pdf", "your_filename.pdf");
-    //         }
-    //         else
-    //         {
-    //             return RedirectToAction("Index", "Home");
-    //         }
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Console.WriteLine("Error: {0}", ex.Message);
-    //         return RedirectToAction("ErrorPage", "Home");
-    //     }
-    // }
-
-    private string GetData(string idDevis)
+    public IActionResult pdf(string idDevis)
     {
-        HttpContext.Session.Remove("adminId");
+        try
+        {
+            if (HttpContext.Session.GetString("sessionId") != null)
+            {
+                // // Your logic to fetch data based on idDevis
+                // string data = GetData(idDevis);
 
-        DemandeDevis dd = new DemandeDevis();
-        Data data = new Data();
+                // // Generate PDF using iTextSharp
+                // byte[] pdfBytes = GeneratePDF(data);
 
-        Connexion coco = new Connexion();
-        coco.connection.Open();
-
-        data.demandeList = dd.detailDevis(coco, idDevis);
-
-        coco.connection.Close();
-        return $"Data related to {idDevis}";
+                // // Return the PDF as a file for download
+                // return File(pdfBytes, "application/pdf", "your_filename.pdf");
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: {0}", ex.Message);
+            return RedirectToAction("ErrorPage", "Home");
+        }
     }
-
-    // private byte[] GeneratePDF(string data)
-    // {
-    //     using (MemoryStream stream = new MemoryStream())
-    //     {
-    //         PdfWriter writer = new PdfWriter(stream);
-    //         PdfDocument pdf = new PdfDocument(writer);
-    //         Document document = new Document(pdf);
-
-    //         // Add content to the PDF document
-    //         document.Add(new Paragraph(data));
-
-    //         // Close the document
-    //         document.Close();
-
-    //         return stream.ToArray();
-    //     }
-    // }
 
     public IActionResult ResetDatabase()
     {
