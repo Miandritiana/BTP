@@ -25,6 +25,8 @@ namespace BTP.Models
         public double quantite { get; set; }
         public double pu { get; set; }
         public double montant { get; set; }
+        public DateTime daty { get; set; }
+        public int month { get; set; }
 
         public DemandeDevis() { }
 
@@ -71,6 +73,12 @@ namespace BTP.Models
             this.montant = montant;
         }
 
+        public DemandeDevis(int month, double montant)
+        {
+            this.month = month;
+            this.montant = montant;
+        }
+
         public DateTime add(Connexion connexion, DateTime dateDebut, string idMaison)
         {
             DateTime val = new();
@@ -108,6 +116,41 @@ namespace BTP.Models
             try
             {
                 string query = "SELECT * FROM v_detailDemandeDevis_montant_reste_etat where idUser ='"+idUser+"'";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    demandeDevisList.Add(new DemandeDevis(
+                        dataReader["idUser"].ToString(),
+                        dataReader["idDemande"].ToString(),
+                        dataReader["idMaison"].ToString(),
+                        dataReader["type"].ToString(),
+                        dataReader["idFinition"].ToString(),
+                        dataReader["designation"].ToString(),
+                        dataReader.GetDouble(dataReader.GetOrdinal("pourcent")),
+                        DateTime.Parse(dataReader["dateDebut"].ToString()),
+                        DateTime.Parse(dataReader["dateFin"].ToString()),
+                        dataReader["idDevis"].ToString(),
+                        dataReader.GetDouble(dataReader.GetOrdinal("montantTotal")),
+                        dataReader.GetDouble(dataReader.GetOrdinal("reste")),
+                        dataReader["etatDePaiement"].ToString()
+                    ));
+                }
+                dataReader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+            }
+            return demandeDevisList;
+        }
+
+        public List<DemandeDevis> findAllnoUser(Connexion connexion)
+        {
+            List<DemandeDevis> demandeDevisList = new List<DemandeDevis>();
+            try
+            {
+                string query = "SELECT * FROM v_detailDemandeDevis_montant_reste_etat";
                 SqlCommand command = new SqlCommand(query, connexion.connection);
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
@@ -215,6 +258,114 @@ namespace BTP.Models
                 Console.WriteLine($"Error: {ex}");
             }
             return demandeDevisList;
+        }
+
+        public double montantTotalEnCours(Connexion connexion)
+        {
+            double val = 0;
+            try
+            {
+                string query = "SELECT sum(montantTotal) as total FROM v_detailDemandeDevis_montant_reste_etat where reste != 0 and idDemande not in (select idDemande from effectue)";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    val = dataReader.GetDouble(dataReader.GetOrdinal("total"));
+                }
+                dataReader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+            }
+            return val;
+        }
+
+        public double montantDejaEffectue(Connexion connexion)
+        {
+            double val = 0;
+            try
+            {
+                string query = "SELECT sum(montantTotal) as total FROM v_detailDemandeDevis_montant_reste_etat where reste = 0 and idDemande in (select idDemande from effectue)";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    val = dataReader["total"] != DBNull.Value ? dataReader.GetDouble(dataReader.GetOrdinal("total")) : 0;
+                }
+                dataReader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+            }
+            return val;
+        }
+
+        public double montantTotalDesDevis(Connexion connexion)
+        {
+            double val = 0;
+            try
+            {
+                string query = "select sum(montantTotal) as total from v_detailDemandeDevis_montant_reste_etat";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    val = dataReader["total"] != DBNull.Value ? dataReader.GetDouble(dataReader.GetOrdinal("total")) : 0;
+                }
+                dataReader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+            }
+            return val;
+        }
+
+        public List<DemandeDevis> chart(Connexion connexion, int year)
+        {
+            List<DemandeDevis> demandeDevisList = new List<DemandeDevis>();
+            try
+            {
+                string query = "SELECT DATEPART(MONTH, daty) AS Month, SUM(montantTotal) AS Montant FROM  v_detailDemandeDevis_montant_reste_etat WHERE  YEAR(daty) = "+year+" GROUP BY  DATEPART(MONTH, daty) ORDER BY Month";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    demandeDevisList.Add(new DemandeDevis(
+                        (int)dataReader["Month"],
+                        dataReader.GetDouble(dataReader.GetOrdinal("Montant"))
+                    ));
+                }
+                dataReader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+            }
+            return demandeDevisList;
+        }
+
+        public List<int> listYear(Connexion connexion)
+        {
+            List<int> intList = new List<int>();
+            try
+            {
+                string query = "SELECT YEAR(daty) as YEAR FROM v_detailDemandeDevis_montant_reste_etat group by year(daty)";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    intList.Add((int)dataReader["YEAR"]);
+                }
+                dataReader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+            }
+            return intList;
         }
     }
 }

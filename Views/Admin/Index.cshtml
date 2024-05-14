@@ -4,12 +4,112 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="container-xxl flex-grow-1 container-p-y">
         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Home renovation /</span> Admin</h4>
+        
         <div class="row mb-5">
             <div class="col-md-6">
                 <form action="@Url.Action("ResetDatabase", "Home")" method="get">
                     <button type="submit"  class="btn btn-danger">RESET DATABASE (voafafa daoholo ny entana an!)</button>
                 </form>
             </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="card mb-4">
+                <div class="table-responsive text-nowrap">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Maison</th>
+                        <th>Finition</th>
+                        <th>Date debut</th>
+                        <th>Date Fin</th>
+                        <th>Total a payer</th>
+                        <th>Etat de Paiement</th>
+                        <th>Reste a payer</th>
+                        <th>Detail</th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @foreach(var d in Model.demandeList)
+                        {
+                            <tr>
+                                <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>@d.typeMaison</strong></td>
+                                <td>@d.finition</td>
+                                <td>@d.dateDebut.ToString("MMMM dd, yyyy")</td>
+                                <td>@d.dateFin.ToString("MMMM dd, yyyy")</td>
+                                <td style="text-align: right;">@(string.Format("{0:#,##0.00}", d.montantTotal)) Ar</td>
+                                <td><span class="badge bg-success">@d.etat</span></td>
+                                <td style="text-align: right;">@(string.Format("{0:#,##0.00}", d.reste)) Ar</td>
+
+                                <form action="@Url.Action("detailDemande", "Admin")" method="post">
+                                    <input type="hidden" value="@d.idDevis" name="idDevis"/>
+                                    <td><button type="submit" class="btn btn-info">Detail</button></td>
+                                </form>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 mb-4">
+                <div class="row">
+                    <div class="col-4 mb-4">
+                        <h4 class="text-muted fw-light">MONTANT TOTAL DES DEVIS</h4>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-title d-flex align-items-start justify-content-between">
+                                        <div class="avatar flex-shrink-0">
+                                        <img src="../assets/img/icons/unicons/wallet-info.png" alt="Credit Card" class="rounded" />
+                                        </div>
+                                    </div>
+                                    <span class="d-block mb-1">Montant total</span>
+                                    <h3 class="card-title text-nowrap mb-2">@(string.Format("{0:#,##0.00}", Model.montantTotalDesDevis)) Ar</h3>
+                                </div>
+                            </div>
+                    </div>
+
+                    <div class="col-4 mb-4">
+                        <h4 class="text-muted fw-light">Montant total en cours</h4>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-title d-flex align-items-start justify-content-between">
+                                        <div class="avatar flex-shrink-0">
+                                        <img src="../assets/img/icons/unicons/paypal.png" alt="Credit Card" class="rounded" />
+                                        </div>
+                                    </div>
+                                    <span class="d-block mb-1">Montant total en cours</span>
+                                    <h3 class="card-title text-nowrap mb-2">@(string.Format("{0:#,##0.00}", Model.montantTotalEnCours)) Ar</h3>
+                                    <small class="text-danger fw-semibold"><i class="bx bx-down-arrow-alt"></i> non Effectue</small>
+                                </div>
+                            </div>
+                    </div>
+ 
+                    <div class="col-4 mb-4">
+                        <h4 class="text-muted fw-light">Montant paiement déjà effectué</h4>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="card-title d-flex align-items-start justify-content-between">
+                                        <div class="avatar flex-shrink-0">
+                                        <img
+                                            src="../assets/img/icons/unicons/chart-success.png"
+                                            alt="chart success"
+                                            class="rounded"
+                                        />
+                                        </div>
+                                    </div>
+                                    <span class="fw-semibold d-block mb-1">Paiements déjà...</span>
+                                    <h3 class="card-title mb-2">@(string.Format("{0:#,##0.00}", Model.montantDejaEffectue)) Ar</h3>
+                                    <small class="text-success fw-semibold"><i class="bx bx-up-arrow-alt"></i> +déjà effectue</small>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using BTP.Models;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
-using iText.Kernel.Pdf;
-using iText.Layout;
-using iText.Layout.Element;
+// using iText.Kernel.Pdf;
+// using iText.Layout;
+// using iText.Layout.Element;
 
 namespace BTP.Controllers;
 
@@ -30,12 +30,15 @@ public class HomeController : Controller
     public IActionResult ClearSession()
     {
         HttpContext.Session.Remove("sessionId");
+        HttpContext.Session.Remove("adminId");
         return RedirectToAction("Index", "Home");
     }
 
 
     public IActionResult checkLog()
     {
+        HttpContext.Session.Remove("adminId");
+
         var num = Request.Form["num"].ToString();
 
         Uuser uu = new Uuser();
@@ -71,6 +74,8 @@ public class HomeController : Controller
 
     public IActionResult import()
     {
+        HttpContext.Session.Remove("adminId");
+
         if(HttpContext.Session.GetString("sessionId") != null)
         {
             return View("Import");
@@ -115,6 +120,8 @@ public class HomeController : Controller
 
     public IActionResult Homepage()
     {
+        HttpContext.Session.Remove("adminId");
+
         if(HttpContext.Session.GetString("sessionId") != null)
         {
             Maison m = new Maison();
@@ -137,6 +144,8 @@ public class HomeController : Controller
 
     public IActionResult Finition()
     {
+        HttpContext.Session.Remove("adminId");
+
         if(HttpContext.Session.GetString("sessionId") != null)
         {
             var idMaison = Request.Form["idMaison"].ToString();
@@ -167,6 +176,8 @@ public class HomeController : Controller
 
     public IActionResult Demande()
     {
+        HttpContext.Session.Remove("adminId");
+
         if(HttpContext.Session.GetString("sessionId") != null)
         {
             string idMaison = HttpContext.Session.GetString("idMaison");
@@ -212,6 +223,8 @@ public class HomeController : Controller
 
     public IActionResult listDemande()
     {
+        HttpContext.Session.Remove("adminId");
+
         if(HttpContext.Session.GetString("sessionId") != null)
         {
             DemandeDevis dd = new();
@@ -233,9 +246,34 @@ public class HomeController : Controller
             return RedirectToAction("Index", "Home");
         }
     }
+
+    public IActionResult detailDemande(string idDevis)
+    {
+        HttpContext.Session.Remove("adminId");
+
+        if(HttpContext.Session.GetString("sessionId") != null)
+        {
+            DemandeDevis dd = new();
+            Data data = new Data();
+
+            Connexion coco = new Connexion();
+            coco.connection.Open();
+
+            data.demandeList = dd.detailDevis(coco, idDevis);
+
+            coco.connection.Close();
+            return View("Detail", data);
+
+        }else{
+
+            return RedirectToAction("Index", "Home");
+        }
+    }
     
     public IActionResult payer(string idDemande)
     {
+        HttpContext.Session.Remove("adminId");
+
         if(HttpContext.Session.GetString("sessionId") != null)
         {
             DemandeDevis dd = new();
@@ -257,6 +295,8 @@ public class HomeController : Controller
 
     public IActionResult paiement()
     {
+        HttpContext.Session.Remove("adminId");
+
         if(HttpContext.Session.GetString("sessionId") != null)
         {
             try
@@ -330,6 +370,8 @@ public class HomeController : Controller
 
     private string GetData(string idDevis)
     {
+        HttpContext.Session.Remove("adminId");
+
         DemandeDevis dd = new DemandeDevis();
         Data data = new Data();
 

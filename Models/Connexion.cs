@@ -36,7 +36,7 @@ namespace BTP.Models
             {
                 if (item != "uuser")
                 {
-                    var cmd = new SqlCommand ($"delete from {item}", connexion.connection);
+                    var cmd = new SqlCommand ($"truncate table {item}", connexion.connection);
                     cmd.ExecuteNonQuery();
                 }
             }

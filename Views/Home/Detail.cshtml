@@ -1,0 +1,73 @@
+@{
+    ViewData["Title"] = "Detail";
+}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="print">
+            <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Home renovation /</span> Votre devis</h4>
+            <div class="row mb-5">
+                <div class="card">
+                    <p class="card-header"></p>
+                    <div class="table-responsive text-nowrap">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Travaux</th>
+                            <th>Designation</th>
+                            <th>Quantite</th>
+                            <th>Prix unitaire</th>
+                            <th>Montant</th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-border-bottom-0">
+                            @foreach(var d in Model.demandeList)
+                            {
+                                <tr>
+                                    <td><i class="fab fa-angular fa-lg text-danger me-3"></i><strong>@d.travaux</strong></td>
+                                    <td>@d.designation</td>
+                                    <td style="text-align: right;">@(string.Format("{0:#,##0.00}", d.quantite)) Ar</td>
+                                    <td style="text-align: right;">@(string.Format("{0:#,##0.00}", d.pu)) Ar</td>
+                                    <td style="text-align: right;">@(string.Format("{0:#,##0.00}", d.montant)) Ar</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        
+    <div class="row">
+        <div class="col-12">
+            <button type="button" class="btn btn-dark" id="pdf">Download pdf</button>
+        </div>
+    </div>
+
+    </div>
+</div>
+
+<script>
+    function generatePDF() {
+        console.log("clicked");
+
+        const htmlContent = document.getElementById('print');
+
+        html2pdf()
+            .set({
+                margin: 1,
+                filename: 'Devis.pdf',
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            })
+            .from(htmlContent)
+            .save()
+            .catch(error => {
+                console.error('Failed to generate PDF:', error);
+            });
+    }
+
+    document.getElementById('pdf').addEventListener('click', function() {
+        generatePDF();
+    });
+
+</script>

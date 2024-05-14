@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+    <!-- <PackageReference Include="itext7" Version="x.x.x" /> -->
   </ItemGroup>
 
-  <PackageReference Include="itext7" Version="x.x.x" />
 
 </Project>

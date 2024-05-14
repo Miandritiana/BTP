@@ -40,14 +40,12 @@
                                         <td><button type="submit" class="btn btn-dark">Paye</button></td>
                                     </form>
                                 }
-                                    @* @if(d.reste == 0){
-                                    <form action="@Url.Action("livre", "Home")" method="post">
-                                        <input type="hidden" name="idDemande" value="@d.idDemande">
-                                        <button type="submit" class="btn btn-danger">Livre</button>
-                                    </form>
-                                    } *@
-                                
-
+                                @if(d.reste == 0){
+                                <form action="@Url.Action("livre", "Home")" method="post">
+                                    <input type="hidden" name="idDemande" value="@d.idDemande">
+                                    <td><button type="submit" class="btn btn-danger">Effectue</button></td>
+                                </form>
+                                }
                             </tr>
                         }
                     </tbody>
@@ -71,10 +69,8 @@
                 ></button>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                No, I'm not
-                </button>
-                <button type="submit" class="btn btn-primary" id="confirmGeneratePDF">I'm sure</button>
+                <button type="button" class="btn btn-secondary" id="detail"> View detail </button>
+                <button type="submit" class="btn btn-primary" id="confirmGeneratePDF">Download PDF</button>
             </div>
             </div>
         </div>
@@ -84,8 +80,10 @@
 </div>
 
 <script>
+
     document.getElementById('confirmGeneratePDF').addEventListener('click', function() {
         var idDevis = document.getElementById('smallModal').getAttribute('data-idDevis');
+        console.log("click"+idDevis);
         generatePDF(idDevis);
     });
 
@@ -99,12 +97,30 @@
                 var blob = new Blob([xhr.response], { type: 'application/pdf' });
                 var link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
-                link.download = 'your_filename.pdf';
+                link.download = 'Devis.pdf';
                 link.click();
             }
         };
         xhr.send();
     }
+
+// This script should be placed after your loop that generates the buttons
+document.querySelectorAll('.btn-warning').forEach(button => {
+    button.addEventListener('click', function () {
+        var idDevis = this.getAttribute('data-idDevis');
+        console.log("click " + idDevis);
+
+        // Use the correct idDevis in your fetch URL
+        fetch(`/Home/detailDemande?idDevis=${idDevis}`, {
+            method: 'POST'
+        }).then(response => {
+            // Handle the response here
+        }).catch(error => {
+            // Handle any errors here
+        });
+    });
+});
+
 </script>
 
 

@@ -195,6 +195,9 @@ create table demandeDevis(
     idMaison varchar(16) references maison(idMaison) on delete cascade,
     idFinition varchar(14) references finition(idFinition) on delete cascade
 );
+alter table demandedevis add daty date default getDate();
+update demandedevis set daty = '2024-05-15' where idUser = 'u1';
+update demandedevis set daty = '2023-05-15' where idUser = 'u2';
 
 --view detail montant
 create view v_detailDemandeDevis_montant as
@@ -212,7 +215,8 @@ select
 	CASE
 		WHEN f.pourcent = 1 THEN v.montantTotal
 		WHEN f.pourcent != 1 THEN (v.montantTotal * f.pourcent)/100 + v.montantTotal
-	END AS montantTotal
+	END AS montantTotal,
+	d.daty
 from demandeDevis d join finition f on f.idFinition = d.idFinition
 left join v_info_maison_total_devis v on v.idMaison = d.idMaison
 
@@ -233,9 +237,42 @@ alter table histo add idDemande varchar(17) references demandeDevis(idDemande);
 
 --reste 
 create view v_detailDemandeDevis_montant_reste as
-select v.idUser, v.idDemande, v.idMaison, v.type, v.idFinition, v.designation,v.pourcent, v.dateDebut, v.dateFin, v.idDevis,v.montantTotal, v.montantTotal - sum(h.paye) as reste from v_detailDemandeDevis_montant v 
-	join histo h on h.idDemande = v.idDemande
-	group by v.idUser, v.idDemande, v.idMaison, v.type, v.idFinition, v.designation,v.pourcent, v.dateDebut, v.dateFin, v.idDevis,v.montantTotal
+-- select v.idUser, v.idDemande, v.idMaison, v.type, v.idFinition, v.designation,v.pourcent, v.dateDebut, v.dateFin, v.idDevis,v.montantTotal, v.montantTotal - sum(h.paye) as reste from v_detailDemandeDevis_montant v 
+-- 	left join histo h on h.idDemande = v.idDemande
+-- 	group by v.idUser, v.idDemande, v.idMaison, v.type, v.idFinition, v.designation,v.pourcent, v.dateDebut, v.dateFin, v.idDevis,v.montantTotal
+SELECT
+    v.idUser,
+    v.idDemande,
+    v.idMaison,
+    v.type,
+    v.idFinition,
+    v.designation,
+    v.pourcent,
+    v.dateDebut,
+    v.dateFin,
+    v.idDevis,
+    v.montantTotal,
+    COALESCE(v.montantTotal - SUM(h.paye), v.montantTotal) AS reste,
+	v.daty
+FROM
+    v_detailDemandeDevis_montant v
+LEFT JOIN
+    histo h ON h.idDemande = v.idDemande
+GROUP BY
+    v.idUser,
+    v.idDemande,
+    v.idMaison,
+    v.type,
+    v.idFinition,
+    v.designation,
+    v.pourcent,
+    v.dateDebut,
+    v.dateFin,
+    v.idDevis,
+	v.daty,
+    v.montantTotal;
+
+
 
 --etat
 create view v_detailDemandeDevis_montant_reste_etat as
@@ -253,6 +290,31 @@ select d.idDevis, t.travaux, t.designation, d.quantite, t.pu, d.quantite*t.pu as
 	join tache t on t.idTache = d.idTache
 	join devis dev on dev.idDevis = d.idDevis
 
+create table effectue (
+    idEffectue AS ('eff' + cast(id as varchar(10))) PERSISTED primary key,
+    id int identity(1, 1),
+    idDemande varchar(17) references demandeDevis(idDemande),
+    idMaison varchar(16) references maison(idMaison),
+    type varchar(40),
+    idFinition varchar(14) references finition(idFinition),
+    designation varchar(40),
+    dateDebut date default getdate(),
+    dateFin date default getdate(),
+    idDevis varchar(15) references devis(idDevis),
+    montantTotal float
+);
+insert into effectue (idDemande, idMaison, type, idFinition, designation, dateDebut, dateFin, idDevis, montantTotal)
+values (select idDemande, idMaison, type, idFinition, designation, dateDebut, dateFin, idDevis, montantTotal from v_detailDemandeDevis_montant_reste_etat where idDemande = 'demande1')
 
-
-
+--chart
+SELECT 
+    DATEPART(MONTH, daty) AS Month,
+    SUM(montantTotal) AS Montant 
+FROM 
+    v_detailDemandeDevis_montant_reste_etat 
+WHERE 
+    YEAR(daty) = @selectedyear
+GROUP BY 
+    DATEPART(MONTH, daty)
+ORDER BY 
+    Month;
