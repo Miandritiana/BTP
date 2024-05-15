@@ -94,17 +94,12 @@ namespace BTP.Models
                 string query = "select durre from maison m join typeMaison ty on ty.idType = m.idType where idMaison = '"+idMaison+"'";
                 SqlCommand command = new SqlCommand(query, connexion.connection);
                 SqlDataReader dataReader = command.ExecuteReader();
-                if (dataReader.Read())
+                while (dataReader.Read())
                 {
                     int durre = dataReader.GetInt32(0);
+                }
                     dataReader.Close();
                     return durre;
-                }
-                else
-                {
-                    dataReader.Close();
-                    return 0;
-                }
             }
             catch (Exception ex)
             {
@@ -180,6 +175,29 @@ namespace BTP.Models
             catch (Exception ex)
             {
                 throw new Exception("Erreur lors de la creation de la maison");
+            }
+        }
+
+        public string getIdMaison(Connexion connexion, string designation, string idDevis)
+        {
+            string val = "";
+            try
+            {
+                string query = "select idMaison from maison m join typeMaison t on t.idType = m.idType join devis d on d.idTypeMaison = t.idType where t.designation = '"+designation+"' and d.idDevis = '"+idDevis+"'";
+                Console.WriteLine(query);
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    val = dataReader.GetString(0);
+                }
+                    dataReader.Close();
+                    return val;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+                return null;
             }
         }
 

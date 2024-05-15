@@ -28,6 +28,10 @@ namespace BTP.Models
         public DateTime daty { get; set; }
         public int month { get; set; }
 
+        public string lieu { get; set; }
+
+        public double payepourcent { get; set; }
+
         public DemandeDevis() { }
 
         public DemandeDevis(string idUser, DateTime dateDebut, DateTime dateFin, string idMaison, string idFinition)
@@ -39,7 +43,17 @@ namespace BTP.Models
             this.idFinition = idFinition;
         }
 
-        public DemandeDevis(string idUser, string idDemande, string idMaison, string typeMaison, string idFinition, string finition, double pourcent, DateTime dateDebut, DateTime dateFin, string idDevis, double montantTotal, double reste, string etat)
+        public DemandeDevis(string idUser, DateTime dateDebut, DateTime dateFin, string idMaison, string idFinition, DateTime daty, string lieu)
+        {
+            this.idUser = idUser;
+            this.dateDebut = dateDebut;
+            this.dateFin = dateFin;
+            this.idMaison = idMaison;
+            this.idFinition = idFinition;
+            this.daty = daty;
+            this.lieu = lieu;
+        }
+        public DemandeDevis(string idUser, string idDemande, string idMaison, string typeMaison, string idFinition, string finition, double pourcent, DateTime dateDebut, DateTime dateFin, string idDevis, double montantTotal, double reste, string etat, double payepourcent)
         {
             this.idUser = idUser;
             this.idDemande = idDemande;
@@ -54,6 +68,7 @@ namespace BTP.Models
             this.montantTotal = montantTotal;
             this.reste = reste;
             this.etat = etat;
+            this.payepourcent = payepourcent;
         }
 
         public DemandeDevis(double montantTotal, double reste, string idDemande)
@@ -115,7 +130,7 @@ namespace BTP.Models
             List<DemandeDevis> demandeDevisList = new List<DemandeDevis>();
             try
             {
-                string query = "SELECT * FROM v_detailDemandeDevis_montant_reste_etat where idUser ='"+idUser+"'";
+                string query = "SELECT *, ((montantTotal-reste)*100)/montantTotal as payepourcent FROM v_detailDemandeDevis_montant_reste_etat where idUser ='"+idUser+"'";
                 SqlCommand command = new SqlCommand(query, connexion.connection);
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
@@ -133,7 +148,8 @@ namespace BTP.Models
                         dataReader["idDevis"].ToString(),
                         dataReader.GetDouble(dataReader.GetOrdinal("montantTotal")),
                         dataReader.GetDouble(dataReader.GetOrdinal("reste")),
-                        dataReader["etatDePaiement"].ToString()
+                        dataReader["etatDePaiement"].ToString(),
+                        dataReader.GetDouble(dataReader.GetOrdinal("payepourcent"))
                     ));
                 }
                 dataReader.Close();
@@ -150,7 +166,7 @@ namespace BTP.Models
             List<DemandeDevis> demandeDevisList = new List<DemandeDevis>();
             try
             {
-                string query = "SELECT * FROM v_detailDemandeDevis_montant_reste_etat";
+                string query = "SELECT *, CASE WHEN montantTotal = 0 THEN 0 ELSE ((montantTotal - reste) * 100) / montantTotal END AS payepourcent FROM v_detailDemandeDevis_montant_reste_etat";
                 SqlCommand command = new SqlCommand(query, connexion.connection);
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
@@ -168,7 +184,8 @@ namespace BTP.Models
                         dataReader["idDevis"].ToString(),
                         dataReader.GetDouble(dataReader.GetOrdinal("montantTotal")),
                         dataReader.GetDouble(dataReader.GetOrdinal("reste")),
-                        dataReader["etatDePaiement"].ToString()
+                        dataReader["etatDePaiement"].ToString(),
+                        dataReader.GetDouble(dataReader.GetOrdinal("payepourcent"))
                     ));
                 }
                 dataReader.Close();
@@ -270,7 +287,7 @@ namespace BTP.Models
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    val = dataReader.GetDouble(dataReader.GetOrdinal("total"));
+                    val = dataReader["total"] != DBNull.Value ? dataReader.GetDouble(dataReader.GetOrdinal("total")) : 0;
                 }
                 dataReader.Close();
             }
@@ -310,10 +327,15 @@ namespace BTP.Models
                 string query = "select sum(montantTotal) as total from v_detailDemandeDevis_montant_reste_etat";
                 SqlCommand command = new SqlCommand(query, connexion.connection);
                 SqlDataReader dataReader = command.ExecuteReader();
+                
                 while (dataReader.Read())
                 {
-                    val = dataReader["total"] != DBNull.Value ? dataReader.GetDouble(dataReader.GetOrdinal("total")) : 0;
+                    if (!dataReader.IsDBNull(dataReader.GetOrdinal("total")))
+                    {
+                        val = dataReader.GetDouble(dataReader.GetOrdinal("total"));
+                    }
                 }
+                
                 dataReader.Close();
             }
             catch (Exception ex)
@@ -366,6 +388,60 @@ namespace BTP.Models
                 Console.WriteLine($"Error: {ex}");
             }
             return intList;
+        }
+
+        public void insertDemandeCSV(Connexion connexion, DemandeDevis demandeDevis)
+        {
+            try
+            {
+                string query = "INSERT INTO demandeDevis (idUser, dateDebut, dateFin, idMaison, idFinition, daty, lieu) " +
+                                    "VALUES ('" + demandeDevis.idUser + "', " +
+                                    "CONVERT(datetime, '" + demandeDevis.dateDebut.ToString("yyyy-MM-dd") + "', 120), " +
+                                    "CONVERT(datetime, '" + demandeDevis.dateFin.ToString("yyyy-MM-dd") + "', 120), " +
+                                    "'" + demandeDevis.idMaison + "', " +
+                                    "'" + demandeDevis.idFinition + "', " +
+                                    "CONVERT(datetime, '" + demandeDevis.daty.ToString("yyyy-MM-dd") + "', 120), " +
+                                    "'" + demandeDevis.lieu + "')";
+
+                Console.WriteLine(query);
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                // command.Parameters.AddWithValue("@idUser", demandeDevis.idUser);
+                // command.Parameters.AddWithValue("@dateDebut", demandeDevis.dateDebut);
+                // command.Parameters.AddWithValue("@dateFin", demandeDevis.dateFin);
+                // command.Parameters.AddWithValue("@idMaison", demandeDevis.idMaison);
+                // command.Parameters.AddWithValue("@idFinition", demandeDevis.idFinition);
+                // command.Parameters.AddWithValue("@daty", demandeDevis.daty);
+                // command.Parameters.AddWithValue("@lieu", demandeDevis.lieu);
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+                throw ex;
+            }
+        }
+
+        public string getIdDemandeIdDevis(Connexion connexion, string idDevis)
+        {
+            try
+            {
+                string paddedIdDevis = idDevis.StartsWith("D") ? "D" + int.Parse(idDevis.TrimStart('D')).ToString("00") : idDevis;
+
+                string query = "select dem.idDemande from demandeDevis dem join maison m on m.idMaison = dem.idMaison join typeMaison t on t.idType = m.idType join devis d on d.idTypeMaison = t.idType where d.idDevis = '"+paddedIdDevis+"'";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                if (dataReader.Read())
+                {
+                    string id = dataReader.GetString(0);
+                    dataReader.Close();
+                    return id;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+            }
+            return null;
         }
 
     }

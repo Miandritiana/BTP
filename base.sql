@@ -109,12 +109,25 @@ update maison set description = '2chambre, 1toilet, 1cuisine, 1living' where idT
 update maison set description = '3chambre, 2toilet, 2cuisine, 2living' where idType = 'type2';
 update maison set description = '4chambre, 3toilet, 3cuisine, 3living' where idType = 'type3';
 
-create table devis(
-    idDevis AS ('devis' + cast(id as varchar(10))) PERSISTED primary key,
-    id int identity(1, 1),
+-- create table devis(
+--     idDevis AS ('devis' + cast(id as varchar(10))) PERSISTED primary key,
+--     id int identity(1, 1),
+--     designation varchar(50),
+--     idTypeMaison varchar(14) references typeMaison(idType) on delete cascade,
+-- );
+
+CREATE TABLE devis (
+    id int IDENTITY(1, 1) PRIMARY KEY,
     designation varchar(50),
-    idTypeMaison varchar(14) references typeMaison(idType) on delete cascade,
+    idTypeMaison varchar(14) REFERENCES typeMaison(idType) ON DELETE CASCADE,
+    idDevis AS (
+        CASE
+            WHEN id < 100 THEN 'D' + RIGHT('000' + CAST(id AS varchar(10)), 2)
+            ELSE 'D' + CAST(id AS varchar(10))
+        END
+    ) PERSISTED UNIQUE
 );
+
 insert into devis (designation, idTypeMaison)
 values
     ('Devis maison boit', 'type1'),
@@ -124,11 +137,13 @@ values
 create table detailDevis(
     idDetail AS ('detail' + cast(id as varchar(10))) PERSISTED primary key,
     id int identity(1, 1),
-    idDevis varchar(15) references devis(idDevis) on delete cascade,
+    idDevis varchar(11) references devis(idDevis) on delete cascade,
     idTache varchar(15) references tache(idTache) on delete cascade,
     quantite float,
     pu int
 );
+ALTER TABLE detailDevis
+ALTER COLUMN pu float;
 insert into detailDevis (idDevis, idTache, quantite, pu)
 values
     ('devis1', 'tache1', 26.98, (select pu from tache where idTache = 'tache1')),
@@ -208,6 +223,8 @@ create table demandeDevis(
     idFinition varchar(14) references finition(idFinition) on delete cascade
 );
 alter table demandedevis add daty date default getDate();
+alter table demandedevis add lieu varchar(100);
+
 update demandedevis set daty = '2024-05-15' where idUser = 'u1';
 update demandedevis set daty = '2023-05-15' where idUser = 'u2';
 
@@ -245,6 +262,7 @@ create table histo(
     paye int default 0
 );
 alter table histo add idDemande varchar(17) references demandeDevis(idDemande);
+alter table histo add ref_paiement varchar(50);
 -- insert into histo (paye, idDemande) values (0, 'demande6');
 
 --reste 
@@ -310,7 +328,7 @@ create table effectue (
     designation varchar(40),
     dateDebut date default getdate(),
     dateFin date default getdate(),
-    idDevis varchar(15) references devis(idDevis),
+    idDevis varchar(11) references devis(idDevis),
     montantTotal float
 );
 insert into effectue (idDemande, idMaison, type, idFinition, designation, dateDebut, dateFin, idDevis, montantTotal)
@@ -359,5 +377,44 @@ delete from demandeDevis
 delete from maison
 delete from typeMaison
 delete from tache
+
+
+truncate table detaildevis
+truncate table devis
+truncate table histo
+truncate table demandeDevis
+truncate table maison
+truncate table typeMaison
+truncate table tache
+
+
+select * from detaildevis
+select * from devis
+select * from histo
+select * from demandeDevis
+select * from maison
+select * from typeMaison
+select * from tache
+
+
+
+truncate table devis
+truncate table detailDevis
+truncate table demandeDevis
+truncate table histo
+truncate table effectue
+truncate table travaux
+truncate table tache
+truncate table typeMaison
+truncate table maison
+
+
+truncate table devis
+truncate table demandeDevis
+truncate table travaux
+truncate table tache
+truncate table typeMaison
+truncate table maison
+
 
 

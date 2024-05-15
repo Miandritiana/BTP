@@ -24,12 +24,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGV0YWlsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/L3/S6/Eval/BTP/Views/Admin/Import.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW1wb3J0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/L3/S6/Eval/BTP/Views/Admin/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/L3/S6/Eval/BTP/Views/Admin/ListTravaux.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTGlzdFRyYXZhdXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/L3/S6/Eval/BTP/Views/Admin/Log.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTG9nLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/L3/S6/Eval/BTP/Views/Admin/modif.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cbW9kaWYuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/L3/S6/Eval/BTP/Views/Home/Detail.cshtml]
@@ -42,10 +54,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/L3/S6/Eval/BTP/Views/Home/Homepage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxIb21lcGFnZS5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/L3/S6/Eval/BTP/Views/Home/Import.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbXBvcnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/L3/S6/Eval/BTP/Views/Home/Index.cshtml]

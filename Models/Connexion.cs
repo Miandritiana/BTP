@@ -24,6 +24,7 @@ namespace BTP.Models
             while (reader.Read())
             {
                 val.Add(reader.GetString(0));
+                Console.WriteLine(reader.GetString(0));
             }
 
             reader.Close();
@@ -40,10 +41,32 @@ namespace BTP.Models
                 List<string> tables = Connexion.allTables(connexion);
                 foreach (var item in tables)
                 {
-                    if (item != "uuser")
+                    if (item != "uuser" && item != "finition")
                     {
-                        var cmd = new SqlCommand($"TRUNCATE TABLE {item}", connexion.connection);
+                        // var cmd = new SqlCommand($"TRUNCATE TABLE {item}", connexion.connection);
+                        var cmd = new SqlCommand($"delete from {item}", connexion.connection);
                         cmd.ExecuteNonQuery();
+
+                    // Reset identity column
+                        var resetCmd = new SqlCommand($"DBCC CHECKIDENT ('{item}', RESEED, 0)", connexion.connection);
+                        resetCmd.ExecuteNonQuery();
+                        EnableForeignKeyConstraintsForTable(connexion, item);
+
+                    }
+                }
+
+                foreach (var item in tables)
+                {
+                    if (item != "uuser" && item != "finition")
+                    {
+                        // var cmd = new SqlCommand($"TRUNCATE TABLE {item}", connexion.connection);
+                        var cmd = new SqlCommand($"truncate table {item}", connexion.connection);
+                        cmd.ExecuteNonQuery();
+
+                        var resetCmd = new SqlCommand($"DBCC CHECKIDENT ('{item}', RESEED, 0)", connexion.connection);
+                        resetCmd.ExecuteNonQuery();
+                        EnableForeignKeyConstraintsForTable(connexion, item);
+
                     }
                 }
 
@@ -68,6 +91,12 @@ namespace BTP.Models
         private static void EnableAllForeignKeys(Connexion connexion)
         {
             var enableFkCmd = new SqlCommand("EXEC sp_MSforeachtable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT ALL'", connexion.connection);
+            enableFkCmd.ExecuteNonQuery();
+        }
+
+        private static void EnableForeignKeyConstraintsForTable(Connexion connexion, string tableName)
+        {
+            var enableFkCmd = new SqlCommand($"ALTER TABLE {tableName} WITH CHECK CHECK CONSTRAINT ALL", connexion.connection);
             enableFkCmd.ExecuteNonQuery();
         }
     }

@@ -25,6 +25,11 @@ namespace BTP.Models
             this.num = num;
         }
 
+        public Uuser(string num)
+        {
+            this.num = num;
+        }
+
         public List<Uuser> findAll(Connexion connexion)
         {
             List<Uuser> userList = new List<Uuser>();
@@ -131,6 +136,44 @@ namespace BTP.Models
                 Console.WriteLine($"Error: {ex}");
                 return false;
             }
+        }
+
+        public void createClient(Connexion connexion, Uuser uuser)
+        {
+            try
+            {
+                string query = "INSERT INTO uuser (name, password, admin, num) VALUES ('RAsoa', '123', '0', @num)";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                command.Parameters.AddWithValue("@num", uuser.num);
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+            }
+        }
+
+        public string lastId(Connexion connexion)
+        {
+            string idUser = "";
+            try
+            {
+                string query = "SELECT TOP 1 idUser FROM uuser ORDER BY idUser DESC";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    idUser = dataReader.GetString(0);
+                }
+                    dataReader.Close();
+                    return idUser;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+            }
+            return idUser;
         }
 
     }

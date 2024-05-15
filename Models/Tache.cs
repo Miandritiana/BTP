@@ -13,11 +13,21 @@ namespace BTP.Models
         public string unite { get; set; }
         public float pu { get; set; }
         public string idTrav { get; set; }
+        public double puDouble { get; set; }
 
         // public string code_travaux { get; set; }
         // public string type_travaux { get; set; }
 
         public Tache() { }
+
+        public Tache(string idTache, string num, string designation, string unite, double puDouble)
+        {
+            this.idTache = idTache;
+            this.num = num;
+            this.designation = designation;
+            this.unite = unite;
+            this.puDouble = puDouble;
+        }
 
         public Tache(string num, string designation, string unite, float pu)
         {
@@ -110,15 +120,13 @@ namespace BTP.Models
         {
             try
             {
-                string query = "UPDATE tache SET id = @id, num = @num, designation = @designation, unite = @unite, pu = @pu, idTrav = @idTrav WHERE idTache = @idTache";
+                string query = "UPDATE tache SET num = @num, designation = @designation, unite = @unite, pu = @pu WHERE idTache = @idTache";
                 SqlCommand command = new SqlCommand(query, connexion.connection);
-                command.Parameters.AddWithValue("@idTache", updatedTache.idTache);
-                command.Parameters.AddWithValue("@id", updatedTache.id);
                 command.Parameters.AddWithValue("@num", updatedTache.num);
                 command.Parameters.AddWithValue("@designation", updatedTache.designation);
                 command.Parameters.AddWithValue("@unite", updatedTache.unite);
                 command.Parameters.AddWithValue("@pu", updatedTache.pu);
-                command.Parameters.AddWithValue("@idTrav", updatedTache.idTrav);
+                command.Parameters.AddWithValue("@idTache", updatedTache.idTache);
                 var result = command.ExecuteNonQuery();
                 if (result == 0)
                 {
@@ -148,6 +156,61 @@ namespace BTP.Models
             {
                 throw ex;
             }
+        }
+
+        public List<Tache> get(Connexion connexion)
+        {
+            List<Tache> tacheList = new List<Tache>();
+            try
+            {
+                string query = "SELECT * FROM tache";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    tacheList.Add(new Tache(
+                        dataReader["idTache"].ToString(),
+                        dataReader["num"].ToString(),
+                        dataReader["designation"].ToString(),
+                        dataReader["unite"].ToString(),
+                        dataReader.GetDouble(dataReader.GetOrdinal("pu"))
+                    ));
+                }
+                dataReader.Close();
+            }
+            catch (Exception ex)    
+            {
+                throw ex;
+            }
+            return tacheList;
+        }
+
+        public Tache getById(Connexion connexion, string idTache)
+        {
+            Tache tache = new Tache();
+            try
+            {
+                string query = "SELECT * FROM tache WHERE idTache = @idTache";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                command.Parameters.AddWithValue("@idTache", idTache);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    tache = new Tache(
+                        dataReader["idTache"].ToString(),
+                        dataReader["num"].ToString(),
+                        dataReader["designation"].ToString(),
+                        dataReader["unite"].ToString(),
+                        dataReader.GetDouble(dataReader.GetOrdinal("pu"))
+                    );
+                }
+                dataReader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return tache;
         }
     }
 }

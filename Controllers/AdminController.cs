@@ -186,4 +186,226 @@ public class AdminController : Controller
         }
     }
 
+    public IActionResult ResetDatabase()
+    {
+        HttpContext.Session.Remove("sessionId");
+        if(HttpContext.Session.GetString("adminId") != null)
+        {
+            Connexion coco = new Connexion();
+            coco.connection.Open();
+                Connexion.ResetDatabase(coco);
+            coco.connection.Close();
+            return RedirectToAction("Index", "Admin");
+
+        }else{
+
+            return RedirectToAction("Log", "Admin");
+        }
+    }
+
+    public IActionResult listTravaux()
+    {
+        HttpContext.Session.Remove("sessionId");
+
+        if(HttpContext.Session.GetString("adminId") != null)
+        {
+            Tache ta = new Tache();
+            Data data = new Data();
+
+            Connexion coco = new Connexion();
+            coco.connection.Open();
+
+            data.tacheList = ta.get(coco);
+
+            coco.connection.Close();
+            return View("ListTravaux", data);
+
+        }else{
+
+            return RedirectToAction("Log", "Admin");
+        }
+    }
+
+    public IActionResult pageModif(string idTache)
+    {
+        HttpContext.Session.Remove("sessionId");
+
+        if (HttpContext.Session.GetString("adminId") != null)
+        {
+            Data data = new Data();
+
+            Tache ta = new Tache();
+            Connexion coco = new Connexion();
+            coco.connection.Open();
+
+            data.tache = ta.getById(coco, idTache);
+
+            coco.connection.Close();
+
+            return View("modif", data);
+        }
+        else
+        {
+            return RedirectToAction("Log", "Admin");
+        }
+    }
+
+    public IActionResult goModif()
+    {
+        HttpContext.Session.Remove("sessionId");
+
+        if (HttpContext.Session.GetString("adminId") != null)
+        {
+            var idTache = Request.Form["idTache"].ToString();
+            var num = Request.Form["num"].ToString();
+            var designation = Request.Form["designation"].ToString();
+            var unite = Request.Form["unite"].ToString();
+            double pu = Convert.ToDouble(Request.Form["pu"]);
+
+            Data data = new Data();
+            Tache ta = new Tache(idTache, num, designation, unite, pu);
+
+            Connexion coco = new Connexion();
+            coco.connection.Open();
+
+            ta.update(coco, ta);
+
+            coco.connection.Close();
+
+            return RedirectToAction("listTravaux", "Admin");
+        }
+        else
+        {
+            return RedirectToAction("Log", "Admin");
+        }
+    }
+
+    public IActionResult import()
+    {
+        HttpContext.Session.Remove("sessionId");
+
+        if(HttpContext.Session.GetString("adminId") != null)
+        {
+            return View("Import");
+
+        }else{
+
+            return RedirectToAction("Log", "Admin");
+        }
+    }
+
+    public IActionResult ImportMaisonTrav(IFormFile csvFile)
+    {
+        if (csvFile != null && csvFile.Length > 0)
+        {
+            try
+            {
+                ImportMaisonTravaux imp = new ImportMaisonTravaux();
+
+                Connexion coco = new Connexion();
+                coco.connection.Open();
+                
+                string message = imp.import(csvFile, coco);
+
+                coco.connection.Close();
+                
+                if (message.Contains("Error") || message.Contains("Exception") || message.Contains("failed"))
+                {
+                    ViewBag.Error = message;
+                }
+                else
+                {
+                    ViewBag.Message = message;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Error processing CSV file: " + ex.Message;
+            }
+        }
+        else
+        {
+            ViewBag.Error = "No file selected.";
+        }
+
+        return View("Import", ViewBag);
+    }
+
+    public IActionResult ImportDevis(IFormFile csvFile)
+    {
+        if (csvFile != null && csvFile.Length > 0)
+        {
+            try
+            {
+                ImportDevis imp = new ImportDevis();
+
+                Connexion coco = new Connexion();
+                coco.connection.Open();
+
+                string message = imp.import(csvFile, coco);
+
+                coco.connection.Close();
+                
+                if (message.Contains("Error") || message.Contains("Exception") || message.Contains("failed"))
+                {
+                    ViewBag.Error = message;
+                }
+                else
+                {
+                    ViewBag.Message = message;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Error processing CSV file: " + ex.Message;
+            }
+        }
+        else
+        {
+            ViewBag.Error = "No file selected.";
+        }
+
+        return View("Import", ViewBag);
+    }
+
+    public IActionResult ImportPaiement(IFormFile csvFile)
+    {
+        if (csvFile != null && csvFile.Length > 0)
+        {
+            try
+            {
+                ImportPaiement imp = new ImportPaiement();
+
+                Connexion coco = new Connexion();
+                coco.connection.Open();
+
+                string message = imp.import(csvFile, coco);
+
+                coco.connection.Close();
+                
+                if (message.Contains("Error") || message.Contains("Exception") || message.Contains("failed"))
+                {
+                    ViewBag.Error = message;
+                }
+                else
+                {
+                    ViewBag.Message = message;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Error processing CSV file: " + ex.Message;
+            }
+        }
+        else
+        {
+            ViewBag.Error = "No file selected.";
+        }
+
+        return View("Import", ViewBag);
+    }
+
 }

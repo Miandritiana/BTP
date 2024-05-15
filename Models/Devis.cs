@@ -74,7 +74,7 @@ namespace BTP.Models
         {
             try
             {
-                string query = "INSERT INTO detailDevis (idDevis, idTache, quantite, pu) VALUES ('"+detailDevis.idDevis+"', '"+detailDevis.idTache+"', "+quantite+", (select pu from tache where idTache = '"+detailDevis.idTache+"'))";
+                string query = "INSERT INTO detailDevis (idDevis, idTache, quantite, pu) VALUES ('"+detailDevis.idDevis+"', '"+detailDevis.idTache+"', "+detailDevis.quantite+", (select pu from tache where idTache = '"+detailDevis.idTache+"'))";
                 Console.WriteLine(query);
                 SqlCommand command = new SqlCommand(query, connexion.connection);
                 // command.Parameters.AddWithValue("@idDevis", detailDevis.idDevis);
@@ -87,5 +87,31 @@ namespace BTP.Models
                 Console.WriteLine($"Error: {ex}");
             }
         }
+
+        public string devisID(Connexion connexion, string idDevis)
+        {
+            string id = "";
+            try
+            {
+                string paddedIdDevis = idDevis.StartsWith("D") ? "D" + int.Parse(idDevis.TrimStart('D')).ToString("00") : idDevis;
+
+                string query = "SELECT idDevis FROM devis WHERE idDevis = '"+paddedIdDevis+"'";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    id = dataReader.GetString(0);
+                }
+                    dataReader.Close();
+                    return id;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+            }
+            return id;
+        }
+
     }
 }

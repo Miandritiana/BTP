@@ -44,5 +44,43 @@ namespace BTP.Models
             }
             return finitionList;
         }
+
+        public string getIdFinition(Connexion connexion, string designation)
+        {
+            string id = "";
+            try
+            {
+                string query = "select idFinition from Finition where designation = '"+designation+"'";
+                SqlCommand commandFinition = new SqlCommand(query, connexion.connection);
+                SqlDataReader dataReaderFini = commandFinition.ExecuteReader();
+                while (dataReaderFini.Read())
+                {
+                    id = dataReaderFini.GetString(0);
+                }
+                    dataReaderFini.Close();
+                    return id;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+            }
+            return null;
+        }
+
+        public void updatePourcent(Connexion connexion, string idFinition, double pourcent)
+        {
+            try
+            {
+                string query = "UPDATE Finition SET pourcent = @pourcent WHERE idFinition = @idFinition";
+                SqlCommand command = new SqlCommand(query, connexion.connection);
+                command.Parameters.AddWithValue("@pourcent", pourcent);
+                command.Parameters.AddWithValue("@idFinition", idFinition);
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex}");
+            }
+        }
     }
 }

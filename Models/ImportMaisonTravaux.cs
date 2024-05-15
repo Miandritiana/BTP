@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.Text;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BTP.Models
 {
@@ -77,78 +79,69 @@ namespace BTP.Models
                         }
                     }
                 }
+
                 for (int i = 1; i < csvContent.Count; i++)
-                {
-                    List<string> processedValues = ParseCsvLine(csvContent[i]);
-
-                    if (processedValues.Count >= 9)
-                    {
-                        ImportMaisonTravaux impo = new ImportMaisonTravaux(
-                            processedValues[0],
-                            processedValues[1],
-                            double.Parse(processedValues[2]),
-                            processedValues[3],
-                            processedValues[4],
-                            processedValues[5],
-                            double.Parse(processedValues[6]),
-                            double.Parse(processedValues[7]),
-                            int.Parse(processedValues[8])
-                        );
-
-                        Console.WriteLine(impo.quantite);
-                        Console.WriteLine(impo.prix_unitaire);
-                        // impo.Insert(coco, impo);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error: Insufficient data in CSV line");
-                    }
-
-                    Console.WriteLine("\n");
-                }
-
-                // Function to parse a CSV line into processed values
-                List<string> ParseCsvLine(string line)
                 {
                     List<string> processedValues = new List<string>();
                     StringBuilder currentValue = new StringBuilder();
                     bool insideQuotes = false;
 
-                    foreach (char c in line)
+                    foreach (char c in csvContent[i])
                     {
                         if (c == '"' && !insideQuotes)
                         {
-                            insideQuotes = true; // Entering a quoted section
+                            insideQuotes = true;
                         }
                         else if (c == '"' && insideQuotes)
                         {
-                            insideQuotes = false; // Exiting a quoted section
+                            insideQuotes = false;
                         }
                         else if (c == ',' && !insideQuotes)
                         {
-                            double parsedValue;
-                            if (double.TryParse(currentValue.ToString().Replace(',', '.'), out parsedValue))
-                            {
-                                processedValues.Add(parsedValue.ToString()); // Add the completed value as string
-                            }
-                            else
-                            {
-                                // Handle parsing error or use a default value
-                                processedValues.Add("0"); // Default value example
-                            }
-                            currentValue.Clear(); // Clear StringBuilder for the next value
+                            processedValues.Add(currentValue.ToString());
+                            currentValue.Clear();
                         }
                         else
                         {
-                            currentValue.Append(c); // Append characters to the current value
+                            currentValue.Append(c);
                         }
                     }
 
                     processedValues.Add(currentValue.ToString());
 
-                    return processedValues;
-                }
+                    for (int j = 0; j < processedValues.Count; j++)
+                    {
+                        if (double.TryParse(processedValues[j], out double result))
+                        {
+                            processedValues[j] = processedValues[j].Replace(',', '.');
+                        }
+                    }
+                    // Create an instance of ImportMaisonTravaux using the processed values
+                    ImportMaisonTravaux impo = new ImportMaisonTravaux(
+                        processedValues[0],  // type_maison
+                        processedValues[1],  // description
+                        double.Parse(processedValues[2]),  // surface
+                        processedValues[3],  // code_travaux
+                        processedValues[4],  // type_travaux
+                        processedValues[5],  // unite
+                        double.Parse(processedValues[6]),  // prix_unitaire
+                        double.Parse(processedValues[7]),  // quantite
+                        int.Parse(processedValues[8])  // duree_travaux
+                    );
+                    impo.Insert(coco, impo);
 
+                    Console.WriteLine(impo.type_maison);
+                    Console.WriteLine(impo.description);
+                    Console.WriteLine(impo.surface);
+                    Console.WriteLine(impo.code_travaux);
+                    Console.WriteLine(impo.type_travaux);
+                    Console.WriteLine(impo.unite);
+                    Console.WriteLine(impo.prix_unitaire);
+                    Console.WriteLine(impo.quantite);
+
+                Console.WriteLine("\n");
+
+                }
 
                 return "CSV file uploaded and data imported into the database.";
             }

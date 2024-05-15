@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "BUQpDMY9n/PqoYJ5s8wkbD9CT/wpnf4pWS46gx9E61Y=",
+  "Hash": "/X83vaIsDUkTP+MjKDqLsflf8/b9v/aPnEgwGcM3NuA=",
   "Source": "BTP",
   "BasePath": "_content/BTP",
   "Mode": "Default",
@@ -967,6 +967,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\assets\\js\\pages-account-settings-account.js"
+    },
+    {
+      "Identity": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\js\\TimesheetEval -Miandritiana.pdf",
+      "SourceId": "BTP",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\",
+      "BasePath": "_content/BTP",
+      "RelativePath": "assets/js/TimesheetEval -Miandritiana.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\assets\\js\\TimesheetEval -Miandritiana.pdf"
     },
     {
       "Identity": "D:\\L3\\S6\\Eval\\BTP\\wwwroot\\assets\\js\\ui-modals.js",

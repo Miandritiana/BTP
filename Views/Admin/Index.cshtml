@@ -7,11 +7,21 @@
         
         <div class="row mb-5">
             <div class="col-md-6">
-                <form action="@Url.Action("ResetDatabase", "Home")" method="get">
+                <form action="@Url.Action("ResetDatabase", "Admin")" method="get">
                     <button type="submit"  class="btn btn-danger">RESET DATABASE (voafafa daoholo ny entana an!)</button>
                 </form>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-2">
+                <form action="@Url.Action("import", "Admin")" method="get">
+                    <button type="submit"  class="btn btn-dark" style="float:right;">Import CSV</button>
+                </form>
+            </div>
+            <div class="col-md-2">
+                <form action="@Url.Action("listTravaux", "Admin")" method="get">
+                    <button type="submit"  class="btn btn-dark" style="float:right;">Travaux</button>
+                </form>
+            </div>
+            <div class="col-md-2">
                 <form action="@Url.Action("dash", "Admin")" method="get">
                     <button type="submit"  class="btn btn-dark" style="float:right;">Dashboard</button>
                 </form>
@@ -30,8 +40,9 @@
                         <th>Date Fin</th>
                         <th>Total a payer</th>
                         <th>Etat de Paiement</th>
+                        <th>Pourcentage de Paiement</th>
                         <th>Reste a payer</th>
-                        <th>Detail</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
@@ -44,12 +55,23 @@
                                 <td>@d.dateFin.ToString("MMMM dd, yyyy")</td>
                                 <td style="text-align: right;">@(string.Format("{0:#,##0.00}", d.montantTotal)) Ar</td>
                                 <td><span class="badge bg-success">@d.etat</span></td>
+                                <td style="text-align: right;">@d.payepourcent %</td>
                                 <td style="text-align: right;">@(string.Format("{0:#,##0.00}", d.reste)) Ar</td>
 
+                                @if(d.reste != 0){
                                 <form action="@Url.Action("detailDemande", "Admin")" method="post">
                                     <input type="hidden" value="@d.idDevis" name="idDevis"/>
                                     <td><button type="submit" class="btn btn-info">Detail</button></td>
                                 </form>
+                                }
+
+                                @if(d.reste == 0){
+                                <form action="@Url.Action("effectue", "Admin")" method="post">
+                                    <input type="hidden" value="@d.idDevis" name="idDevis"/>
+                                    <td><button type="submit" class="btn btn-warning">Paye Effectue</button></td>
+                                </form>
+                                }
+
                             </tr>
                         }
                     </tbody>

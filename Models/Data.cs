@@ -14,6 +14,8 @@ namespace BTP.Models
         public double montantTotalDesDevis = new();
         public List<int> listYear = new List<int>();
         public List<Chart> chartList = new List<Chart>();
+        public List<Tache> tacheList = new List<Tache>();
+        public Tache tache = new Tache();
 
         public Data()
         {
@@ -26,6 +28,8 @@ namespace BTP.Models
             this.montantTotalDesDevis = 0;
             this.listYear = new List<int>();
             this.chartList = new List<Chart>();
+            this.tacheList = new List<Tache>();
+            this.tache = new Tache();
         }
     }
 }

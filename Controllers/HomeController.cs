@@ -20,6 +20,12 @@ public class HomeController : Controller
 
     public IActionResult Index(bool error = false)
     {
+        // Connexion coco = new Connexion();
+        // coco.connection.Open();
+        //         Paiement paiement = new();
+        //         paiement.insert(coco, new Paiement(new DateTime("2024-02-12"), 0, "demande", "refpaiye"));
+        // coco.connection.Close();
+
         if (error)
         {
             ViewData["error"] = TempData["error"]?.ToString();
@@ -70,20 +76,6 @@ public class HomeController : Controller
         coco.connection.Close();
 
         return View();
-    }
-
-    public IActionResult import()
-    {
-        HttpContext.Session.Remove("adminId");
-
-        if(HttpContext.Session.GetString("sessionId") != null)
-        {
-            return View("Import");
-
-        }else{
-
-            return RedirectToAction("Index", "Home");
-        }
     }
 
     public IActionResult Homepage()
@@ -201,9 +193,6 @@ public class HomeController : Controller
             Connexion coco = new Connexion();
             coco.connection.Open();
 
-            string lastId = dd.lastId(coco);
-            Paiement p = new Paiement(lastId, 0);
-            p.insert(coco, p);
             data.demandeList = dd.findAll(coco, HttpContext.Session.GetString("sessionId"));
 
             coco.connection.Close();
@@ -337,21 +326,6 @@ public class HomeController : Controller
         }
     }
 
-    public IActionResult ResetDatabase()
-    {
-        if(HttpContext.Session.GetString("sessionId") != null)
-        {
-            Connexion coco = new Connexion();
-            coco.connection.Open();
-                Connexion.ResetDatabase(coco);
-            coco.connection.Close();
-            return RedirectToAction("Homepage", "Home");
-
-        }else{
-
-            return RedirectToAction("Index", "Home");
-        }
-    }
     public IActionResult Privacy()
     {
         return View();
@@ -380,42 +354,6 @@ public class HomeController : Controller
     //     }
     // }
 
-    public IActionResult ImportMaisonTrav(IFormFile csvFile)
-    {
-        if (csvFile != null && csvFile.Length > 0)
-        {
-            try
-            {
-                ImportMaisonTravaux imp = new ImportMaisonTravaux();
-
-                Connexion coco = new Connexion();
-                coco.connection.Open();
-                
-                string message = imp.import(csvFile, coco);
-
-                coco.connection.Close();
-                
-                if (message.Contains("Error") || message.Contains("Exception") || message.Contains("failed"))
-                {
-                    ViewBag.Error = message;
-                }
-                else
-                {
-                    ViewBag.Message = message;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Error = "Error processing CSV file: " + ex.Message;
-            }
-        }
-        else
-        {
-            ViewBag.Error = "No file selected.";
-        }
-
-        return View("Import", ViewBag);
-    }
+    
 
 }
