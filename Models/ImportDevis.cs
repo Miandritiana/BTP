@@ -46,6 +46,7 @@ namespace BTP.Models
 
                 Devis devis = new();
                 string devisID = devis.devisID(coco, impo.ref_devis);
+                Console.WriteLine("sdfzghnm,"+devisID);
 
                 Maison maison = new();
                 string idMaison = maison.getIdMaison(coco, impo.type_maison, devisID);

@@ -398,15 +398,15 @@ select * from tache
 
 
 
-truncate table devis
-truncate table detailDevis
-truncate table demandeDevis
-truncate table histo
-truncate table effectue
-truncate table travaux
-truncate table tache
-truncate table typeMaison
-truncate table maison
+select * from devis
+select * from detailDevis
+select * from demandeDevis
+select * from histo
+select * from effectue
+select * from travaux
+select * from tache
+select * from typeMaison
+select * from maison
 
 
 truncate table devis

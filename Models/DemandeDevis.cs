@@ -423,6 +423,7 @@ namespace BTP.Models
 
         public string getIdDemandeIdDevis(Connexion connexion, string idDevis)
         {
+            string id = "";
             try
             {
                 string paddedIdDevis = idDevis.StartsWith("D") ? "D" + int.Parse(idDevis.TrimStart('D')).ToString("00") : idDevis;
@@ -430,12 +431,12 @@ namespace BTP.Models
                 string query = "select dem.idDemande from demandeDevis dem join maison m on m.idMaison = dem.idMaison join typeMaison t on t.idType = m.idType join devis d on d.idTypeMaison = t.idType where d.idDevis = '"+paddedIdDevis+"'";
                 SqlCommand command = new SqlCommand(query, connexion.connection);
                 SqlDataReader dataReader = command.ExecuteReader();
-                if (dataReader.Read())
+                while (dataReader.Read())
                 {
-                    string id = dataReader.GetString(0);
+                    id = dataReader.GetString(0);
+                }
                     dataReader.Close();
                     return id;
-                }
             }
             catch (Exception ex)
             {

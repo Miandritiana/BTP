@@ -31,12 +31,15 @@ namespace BTP.Models
         {
             try
             {
-                string query = "INSERT INTO devis (designation, idTypeMaison) VALUES ((select designation from typeMaison where idType = '"+devis.idTypeMaison+"'), '"+devis.idTypeMaison+"')";
+                string query = "INSERT INTO devis (designation, idTypeMaison) " +
+                            "SELECT designation, idType " +
+                            "FROM typeMaison " +
+                            "WHERE idType = '"+devis.idTypeMaison+"' " +
+                            "AND NOT EXISTS (SELECT 1 FROM devis WHERE idTypeMaison = '"+devis.idTypeMaison+"')";
                 Console.WriteLine(query);
                 SqlCommand command = new SqlCommand(query, connexion.connection);
-                // command.Parameters.AddWithValue("@idTypeMaison", devis.idTypeMaison);
                 command.ExecuteNonQuery();
-            }
+            }  
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex}");
@@ -94,8 +97,8 @@ namespace BTP.Models
             try
             {
                 string paddedIdDevis = idDevis.StartsWith("D") ? "D" + int.Parse(idDevis.TrimStart('D')).ToString("00") : idDevis;
-
                 string query = "SELECT idDevis FROM devis WHERE idDevis = '"+paddedIdDevis+"'";
+                Console.WriteLine(query);
                 SqlCommand command = new SqlCommand(query, connexion.connection);
                 
                 SqlDataReader dataReader = command.ExecuteReader();
